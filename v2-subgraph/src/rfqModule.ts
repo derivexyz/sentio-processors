@@ -4,9 +4,6 @@ import { BigDecimal, BigInt, Bytes } from "@graphprotocol/graph-ts"
 import { handleNewAsset, ONE } from "./utils"
 
 export function handleRFQTradeCompleted(event: RFQTradeCompletedEvent): void {
-  let tradeId = event.transaction.hash.concatI32(event.logIndex.toI32())
-  let trade = new Trade(tradeId)
-
   // Load or create maker and taker subaccounts
   let makerId = event.params.maker.toString()
   let takerId = event.params.taker.toString()
