@@ -20,6 +20,8 @@ type SubAccount @entity {
   matchingOwner: Account # Only populated if this is owned by the matching contract
   balances: [SubAccountBalance!]! @derivedFrom(field: "subaccount")
   balanceAdjustments: [BalanceAdjusted!]! @derivedFrom(field: "subaccount")
+  takerTrades: [Trade!]! @derivedFrom(field: "taker")
+  makerTrades: [Trade!]! @derivedFrom(field: "maker")
 }
 
 type Account @entity {
@@ -47,6 +49,7 @@ type Asset @entity {
   isCall: Boolean
   balances: [SubAccountBalance!]! @derivedFrom(field: "asset")
   balanceAdjustments: [BalanceAdjusted!]! @derivedFrom(field: "asset")
+  trades: [Trade!]! @derivedFrom(field: "base")
 }
 
 
@@ -66,4 +69,18 @@ type AssetContract @entity {
 
 type Currency @entity {
   id: String!
+}
+
+type Trade @entity(immutable: true) {
+  id: Bytes!
+  base: Asset!
+  taker: SubAccount!
+  maker: SubAccount!
+  takerIsBid: Boolean!
+  isRFQ: Boolean!
+  amountQuote: BigDecimal!
+  amountBase: BigDecimal!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
 }

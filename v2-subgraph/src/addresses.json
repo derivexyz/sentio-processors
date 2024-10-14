@@ -18,5 +18,9 @@
     "0xd0711b9eBE84b778483709CDe62BacFDBAE13623":{ 
         "currency": "BTC",
         "type": "option"
+    },
+    "0x57b03e14d409adc7fab6cfc44b5886cad2d5f02b":{
+        "currency": "USDC",
+        "type": "spot"
     }
 }
