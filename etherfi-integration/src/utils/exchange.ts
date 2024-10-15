@@ -62,17 +62,17 @@ export async function getBalances(ctx: EthContext, v2AssetName: string, assetAnd
 
     const query = `
         {
-        subAccountBalances(
-            where: {asset: "0x0000000000000000000000002bf0d5d2ca86584bc4cfb6fac7ad09d4143eb057", balance_gt: 0}
-        ) {
-            subaccount {
-            matchingOwner {
-                id
-                owner
+            subAccountBalances(
+                where: {asset: "0x0000000000000000000000002bf0d5d2ca86584bc4cfb6fac7ad09d4143eb057", balance_gt: 0}
+            ) {
+                subaccount {
+                    matchingOwner {
+                        id
+                        owner
+                    }
+                }
+                balance
             }
-            }
-            balance
-        }
         }`;
     const result = await queryV2Subgraph(query)
 
@@ -140,8 +140,4 @@ interface SubAccount {
 interface SubAccountBalance {
     balance: string;
     subaccount: SubAccount;
-}
-
-interface SubAccountBalancesResult {
-    subAccountBalances: SubAccountBalance[];
 }
