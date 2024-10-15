@@ -1,10 +1,11 @@
 import { EthChainId } from '@sentio/sdk/eth'
 import { ERC20Processor } from '@sentio/sdk/eth/builtin'
-import { ARB_VAULT_PRICE_START_BLOCK, LYRA_VAULTS, MAINNET_VAULT_PRICE_START_BLOCK } from '../src/config.js'
-import { DeriveVaultUserSnapshot } from '../src/schema/store.js'
+import { ARB_VAULT_PRICE_START_BLOCK, LYRA_VAULTS, MAINNET_VAULT_PRICE_START_BLOCK } from './config.js'
+import { DeriveExchangeUserSnapshot, DeriveVaultUserSnapshot } from './schema/store.js'
 import { updateUserSnapshotAndEmitPointUpdate } from './utils/userSnapshotsAndPoints.js'
 import { saveCurrentVaultTokenPrice } from './utils/vaultTokenPrice.js'
 import { GlobalProcessor } from '@sentio/sdk/eth'
+import { updateUserExchangeSnapshotAndEmitPoints } from './utils/exchange.js'
 
 /////////////////
 // Methodology //
@@ -48,7 +49,7 @@ ERC20Processor.bind(
       }
       await Promise.all(promises);
     } catch (e) {
-      console.log("onTimeInterval error", e.message, ctx.timestamp);
+      console.log("onTimeInterval vault error", e.message, ctx.timestamp);
     }
   },
     60 * 24,
@@ -149,4 +150,18 @@ GlobalProcessor.bind(
 },
   60 * 24,
   60 * 24
+)
+
+//////////////////////////////////////
+// Lyra Chain EtherFi Balance Binds //
+//////////////////////////////////////
+
+GlobalProcessor.bind(
+  { network: EthChainId.ETHEREUM, startBlock: MAINNET_VAULT_PRICE_START_BLOCK }
+).onTimeInterval(async (_, ctx) => {
+  await updateUserExchangeSnapshotAndEmitPoints(ctx, "EBTC")
+  await updateUserExchangeSnapshotAndEmitPoints(ctx, "WETH")
+},
+  60,
+  60
 )

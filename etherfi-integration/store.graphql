@@ -14,3 +14,11 @@ type DeriveVaultTokenPrice @entity {
     timestampMs: BigInt!
     vaultToUnderlying: BigDecimal!
 }
+
+type DeriveExchangeUserSnapshot @entity {
+    id: ID!
+    tokenName: String!
+    amount: BigDecimal!
+    eoa: String!
+    timestampMs: BigInt!
+}

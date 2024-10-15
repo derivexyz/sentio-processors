@@ -1,4 +1,4 @@
-project: lyra-etherfi-vaults
+project: etherfi-integration
 
 networkOverrides: 
   - chain: '200901' # overriding BITLAYER into Lyra Chain

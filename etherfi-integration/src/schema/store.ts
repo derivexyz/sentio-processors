@@ -13,7 +13,7 @@ import { DatabaseSchema } from '@sentio/sdk'
 
 
 @Entity("DeriveVaultUserSnapshot")
-export class DeriveVaultUserSnapshot extends AbstractEntity {
+export class DeriveVaultUserSnapshot extends AbstractEntity  {
 
 	@Required
 	@Column("ID")
@@ -42,11 +42,11 @@ export class DeriveVaultUserSnapshot extends AbstractEntity {
 	@Required
 	@Column("BigDecimal")
 	weETHEffectiveBalance: BigDecimal
-	constructor(data: Partial<DeriveVaultUserSnapshot>) { super() }
+  constructor(data: Partial<DeriveVaultUserSnapshot>) {super()}
 }
 
 @Entity("DeriveVaultTokenPrice")
-export class DeriveVaultTokenPrice extends AbstractEntity {
+export class DeriveVaultTokenPrice extends AbstractEntity  {
 
 	@Required
 	@Column("ID")
@@ -63,7 +63,32 @@ export class DeriveVaultTokenPrice extends AbstractEntity {
 	@Required
 	@Column("BigDecimal")
 	vaultToUnderlying: BigDecimal
-	constructor(data: Partial<DeriveVaultTokenPrice>) { super() }
+  constructor(data: Partial<DeriveVaultTokenPrice>) {super()}
+}
+
+@Entity("DeriveExchangeUserSnapshot")
+export class DeriveExchangeUserSnapshot extends AbstractEntity  {
+
+	@Required
+	@Column("ID")
+	id: ID
+
+	@Required
+	@Column("String")
+	tokenName: String
+
+	@Required
+	@Column("BigDecimal")
+	amount: BigDecimal
+
+	@Required
+	@Column("String")
+	eoa: String
+
+	@Required
+	@Column("BigInt")
+	timestampMs: BigInt
+  constructor(data: Partial<DeriveExchangeUserSnapshot>) {super()}
 }
 
 
@@ -82,11 +107,20 @@ type DeriveVaultTokenPrice @entity {
     vaultAddress: String!
     timestampMs: BigInt!
     vaultToUnderlying: BigDecimal!
+}
+
+type DeriveExchangeUserSnapshot @entity {
+    id: ID!
+    tokenName: String!
+    amount: BigDecimal!
+    eoa: String!
+    timestampMs: BigInt!
 }`
 DatabaseSchema.register({
-	source,
-	entities: {
-		"DeriveVaultUserSnapshot": DeriveVaultUserSnapshot,
-		"DeriveVaultTokenPrice": DeriveVaultTokenPrice
-	}
+  source,
+  entities: {
+    "DeriveVaultUserSnapshot": DeriveVaultUserSnapshot,
+		"DeriveVaultTokenPrice": DeriveVaultTokenPrice,
+		"DeriveExchangeUserSnapshot": DeriveExchangeUserSnapshot
+  }
 })

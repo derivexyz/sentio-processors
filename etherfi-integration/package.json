@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "lyra-etherfi-vaults",
+  "name": "etherfi-integration",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -11,7 +11,8 @@
     "postinstall": "sentio gen"
   },
   "dependencies": {
-    "@sentio/sdk": "^2.41.3-rc.5"
+    "@sentio/sdk": "^2.41.3-rc.5",
+    "axios": "^1.7.4"
   },
   "devDependencies": {
     "@sentio/cli": "^2.20.2-rc.4",
