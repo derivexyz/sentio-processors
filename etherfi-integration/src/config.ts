@@ -1,3 +1,4 @@
+import { EthChainId } from "@sentio/sdk/eth";
 
 export const MILLISECONDS_PER_DAY = 60 * 60 * 1000 * 24;
 
@@ -63,4 +64,18 @@ export const V2_ASSETS: Record<string, V2AssetConfig> = {
         lombardPointPerDay: 10000,
         babylonPointsPerDay: 24
     },
+}
+
+export type VaultPoolConfig = {
+    chainId: EthChainId;
+    address: string;
+    name: string;
+}
+
+export const VAULT_POOLS: Record<string, VaultPoolConfig> = {
+    SWELL_L2: {
+        chainId: EthChainId.ETHEREUM,
+        address: "0x38D43a6Cb8DA0E855A42fB6b0733A0498531d774",
+        name: "Swell L2"
+    }
 }

@@ -1,9 +1,11 @@
-import { EthContext, isNullAddress } from "@sentio/sdk/eth";
+import { EthChainId, EthContext, isNullAddress } from "@sentio/sdk/eth";
 import { erc20 } from "@sentio/sdk/eth/builtin";
 import { DeriveVaultUserSnapshot } from "../schema/store.js";
-import { LYRA_VAULTS, MILLISECONDS_PER_DAY, VaultConfig } from "../config.js";
+import { LYRA_VAULTS, MILLISECONDS_PER_DAY, VAULT_POOLS, VaultConfig } from "../config.js";
 import { toUnderlyingBalance } from "./vaultTokenPrice.js";
 import { getAddress } from "ethers";
+import { BigDecimal } from "@sentio/sdk";
+import { getSwellSimpleStakingContract } from "../types/eth/swellsimplestaking.js";
 
 export async function updateUserSnapshotAndEmitPointUpdate(ctx: EthContext, vaultName: string, vaultTokenAddress: string, owner: string) {
     let [oldSnapshot, newSnapshot] = await updateDeriveVaultUserSnapshot(ctx, vaultName, vaultTokenAddress, owner)
@@ -17,8 +19,10 @@ export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: 
 
     const vaultTokenContractView = erc20.getERC20ContractOnContext(ctx, vaultTokenAddress)
     let currentTimestampMs = BigInt(ctx.timestamp.getTime())
-    let currentShareBalance = (await vaultTokenContractView.balanceOf(owner)).scaleDown(18)
-    let underlyingBalance = await toUnderlyingBalance(ctx, LYRA_VAULTS[vaultName].lyra, currentShareBalance, currentTimestampMs)
+    let currentVaultTokenBalance = (await vaultTokenContractView.balanceOf(owner)).scaleDown(18)
+    let currentSwellL2Balance = await getSwellL2Balance(ctx, owner, vaultTokenAddress)
+    let totalBalance = currentSwellL2Balance.plus(currentVaultTokenBalance)
+    let underlyingBalance = await toUnderlyingBalance(ctx, LYRA_VAULTS[vaultName].lyra, totalBalance, currentTimestampMs)
 
     let lastSnapshot = await ctx.store.get(DeriveVaultUserSnapshot, `${owner}-${vaultTokenAddress}`)
 
@@ -42,7 +46,7 @@ export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: 
             vaultName: vaultName,
             vaultAddress: vaultTokenAddress,
             timestampMs: currentTimestampMs,
-            vaultBalance: currentShareBalance,
+            vaultBalance: totalBalance,
             weETHEffectiveBalance: underlyingBalance
         }
     )
@@ -78,4 +82,23 @@ export function emitUserPointUpdate(ctx: EthContext, vaultConfig: VaultConfig, l
         newBalance: newSnapshot.vaultBalance,
         newEffectiveBalance: newSnapshot.weETHEffectiveBalance,
     });
+}
+
+async function getSwellL2Balance(ctx: EthContext, owner: string, vaultToken: string): Promise<BigDecimal> {
+    if (ctx.chainId != VAULT_POOLS["SWELL_L2"].chainId) {
+        return new BigDecimal(0)
+    }
+
+    const swellSimpleStakingContract = getSwellSimpleStakingContract(EthChainId.BITLAYER, VAULT_POOLS["SWELL_L2"].address)
+    const stakedBalance = (await swellSimpleStakingContract.stakedBalances(owner, vaultToken)).scaleDown(18)
+
+    if (!stakedBalance.isZero()) {
+        ctx.eventLogger.emit("swell_simple_staking_update", {
+            account: owner,
+            vaultToken: vaultToken,
+            stakedBalance: stakedBalance,
+            timestampMs: BigInt(ctx.timestamp.getTime())
+        })
+    }
+    return stakedBalance
 }
