@@ -75,7 +75,7 @@ export function handleBalanceAdjusted(event: BalanceAdjustedEvent): void {
 // }
 
 export function handleTransfer(event: TransferEvent): void {
-  let accountId = event.params.to
+  let accountId = event.params.to.toHexString()
   let subaccountId = event.params.tokenId.toString()
 
   // Create or load Account entity. If it doesnt exist, its an EOA

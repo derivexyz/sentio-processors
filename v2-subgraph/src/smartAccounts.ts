@@ -14,22 +14,22 @@ import {
 
     let owner = lightAccount.owner()
 
-    let account = new Account(event.params.sender)
-    account.owner = owner
+    let account = new Account(event.params.sender.toHexString())
+    account.owner = owner.toHexString()
     account.save()
   }
 
   export function handleOwnershipTransferred(event: OwnershipTransferred): void {
     // Update the owner of the Account
-    let accountId = event.address
+    let accountId = event.address.toHexString()
     let account = Account.load(accountId)
     
     if (account) {
-      account.owner = event.params.newOwner
+      account.owner = event.params.newOwner.toHexString()
       account.save()
     }else{
       account = new Account(accountId)
-      account.owner = event.params.newOwner
+      account.owner = event.params.newOwner.toHexString()
       account.save()
     }
   }

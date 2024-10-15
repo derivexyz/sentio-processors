@@ -10,7 +10,7 @@ import {
   
     if (subaccount) {
       // Check if the Account exists
-      let accountId = event.params.owner
+      let accountId = event.params.owner.toHexString()
       let account = Account.load(accountId)
   
       // If the Account doesn't exist, create it

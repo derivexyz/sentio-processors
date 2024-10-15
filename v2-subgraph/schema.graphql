@@ -25,8 +25,8 @@ type SubAccount @entity {
 }
 
 type Account @entity {
-  id: Bytes!
-  owner: Bytes # If a LightAccount
+  id: String!
+  owner: String # If a LightAccount
   subaccounts: [SubAccount!]! @derivedFrom(field: "owner")
   depositedSubaccounts: [SubAccount!]! @derivedFrom(field: "matchingOwner")
 }
