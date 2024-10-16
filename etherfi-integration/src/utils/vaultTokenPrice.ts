@@ -4,8 +4,7 @@ import { getLyraVaultTokenContract, getLyraVaultTokenContractOnContext } from ".
 import { MILLISECONDS_PER_DAY } from "../config.js"
 import { BigDecimal } from "@sentio/sdk"
 import { getAddress } from "ethers"
-import { estimateBlockNumberAtDate } from "./crosschainBlocks.js"
-
+import { estimateBlockNumberAtDate } from "@derivefinance/derive-sentio-utils"
 
 export async function saveCurrentVaultTokenPrice(ctx: EthContext, vaultTokenAddress: string, predepositUpgradeTimestampMs: number | undefined) {
     const nowMs = ctx.timestamp.getTime()

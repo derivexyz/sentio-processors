@@ -1,6 +1,6 @@
 import { EthChainId } from '@sentio/sdk/eth'
 import { ERC20Processor } from '@sentio/sdk/eth/builtin'
-import { DERIVE_VAULTS, MAINNET_VAULT_PRICE_START_BLOCK, OP_SEPOLIA_VAULT_PRICE_START_BLOCK, VaultName } from './config.js'
+import { DERIVE_VAULTS, MAINNET_VAULT_PRICE_START_BLOCK, OP_SEPOLIA_VAULT_PRICE_START_BLOCK } from './config.js'
 import { DeriveVaultUserSnapshot } from './schema/store.js'
 import { updateUserSnapshotAndEmitPointUpdate } from './utils/userSnapshotsAndPoints.js'
 import { saveCurrentVaultTokenPrice } from './utils/vaultTokenPrice.js'
@@ -28,7 +28,7 @@ for (const params of [
   DERIVE_VAULTS.LBTCPS_TESTNET,
 ]) {
   ERC20Processor.bind(
-    { address: params.mainnet_or_opsep, network: params.destinationChainId }
+    { address: params.destinationChainAddress, network: params.destinationChainId }
   )
     .onEventTransfer(async (event, ctx) => {
       for (const user of [event.args.from, event.args.to]) {
@@ -43,7 +43,7 @@ for (const params of [
         const promises = [];
         for (const snapshot of userSnapshots) {
           promises.push(
-            await updateUserSnapshotAndEmitPointUpdate(ctx, snapshot.vaultName as VaultName, snapshot.vaultAddress, snapshot.owner)
+            await updateUserSnapshotAndEmitPointUpdate(ctx, snapshot.vaultName, snapshot.vaultAddress, snapshot.owner)
           );
         }
         await Promise.all(promises);
@@ -61,7 +61,7 @@ for (const params of [
   DERIVE_VAULTS.LBTCCS,
   DERIVE_VAULTS.LBTCCS_TESTNET,
 ]) {
-  ERC20Processor.bind({ address: params.mainnet_or_opsep, network: params.destinationChainId })
+  ERC20Processor.bind({ address: params.destinationChainAddress, network: params.destinationChainId })
     .onEventTransfer(async (event, ctx) => {
       for (const user of [event.args.from, event.args.to]) {
         await updateUserSnapshotAndEmitPointUpdate(ctx, params.vaultName, ctx.address, user)

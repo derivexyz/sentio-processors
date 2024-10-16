@@ -29,11 +29,11 @@ import { updateUserExchangeSnapshotAndEmitPoints } from './utils/exchange.js'
 ///////////////////
 
 ERC20Processor.bind(
-  { address: LYRA_VAULTS.WETHC.mainnet, network: EthChainId.ETHEREUM }
+  { address: LYRA_VAULTS.WEETHC_MAINNET.destinationChainAddress, network: EthChainId.ETHEREUM }
 )
   .onEventTransfer(async (event, ctx) => {
     for (const user of [event.args.from, event.args.to]) {
-      await updateUserSnapshotAndEmitPointUpdate(ctx, "WETHC", ctx.address, user)
+      await updateUserSnapshotAndEmitPointUpdate(ctx, "WEETHC_MAINNET", ctx.address, user)
     }
   })
   // this time interval handles all three vaults (weETHC, weETHCS, weETHBULL)
@@ -57,20 +57,20 @@ ERC20Processor.bind(
   )
 
 ERC20Processor.bind(
-  { address: LYRA_VAULTS.WETHCS.mainnet, network: EthChainId.ETHEREUM }
+  { address: LYRA_VAULTS.WEETHCS_MAINNET.destinationChainAddress, network: EthChainId.ETHEREUM }
 )
   .onEventTransfer(async (event, ctx) => {
     for (const user of [event.args.from, event.args.to]) {
-      await updateUserSnapshotAndEmitPointUpdate(ctx, "WETHCS", ctx.address, user)
+      await updateUserSnapshotAndEmitPointUpdate(ctx, "WEETHCS_MAINNET", ctx.address, user)
     }
   })
 
 ERC20Processor.bind(
-  { address: LYRA_VAULTS.WETHBULL.mainnet, network: EthChainId.ETHEREUM }
+  { address: LYRA_VAULTS.WEETHBULL_MAINNET.destinationChainAddress, network: EthChainId.ETHEREUM }
 )
   .onEventTransfer(async (event, ctx) => {
     for (const user of [event.args.from, event.args.to]) {
-      await updateUserSnapshotAndEmitPointUpdate(ctx, "WETHBULL", ctx.address, user)
+      await updateUserSnapshotAndEmitPointUpdate(ctx, "WEETHBULL_MAINNET", ctx.address, user)
     }
   })
 
@@ -80,11 +80,11 @@ ERC20Processor.bind(
 ////////////////////
 
 ERC20Processor.bind(
-  { address: LYRA_VAULTS.WETHC.arb, network: EthChainId.ARBITRUM }
+  { address: LYRA_VAULTS.WEETHCS_ARB.destinationChainAddress, network: EthChainId.ARBITRUM }
 )
   .onEventTransfer(async (event, ctx) => {
     for (const user of [event.args.from, event.args.to]) {
-      await updateUserSnapshotAndEmitPointUpdate(ctx, "WETHC", ctx.address, user)
+      await updateUserSnapshotAndEmitPointUpdate(ctx, "WEETHCS_ARB", ctx.address, user)
     }
   })
   // this time interval handles all three vaults (weETHC, weETHCS, weETHBULL)
@@ -108,20 +108,20 @@ ERC20Processor.bind(
   )
 
 ERC20Processor.bind(
-  { address: LYRA_VAULTS.WETHCS.arb, network: EthChainId.ARBITRUM }
+  { address: LYRA_VAULTS.WEETHCS_ARB.destinationChainAddress, network: EthChainId.ARBITRUM }
 )
   .onEventTransfer(async (event, ctx) => {
     for (const user of [event.args.from, event.args.to]) {
-      await updateUserSnapshotAndEmitPointUpdate(ctx, "WETHCS", ctx.address, user)
+      await updateUserSnapshotAndEmitPointUpdate(ctx, "WEETHCS_ARB", ctx.address, user)
     }
   })
 
 ERC20Processor.bind(
-  { address: LYRA_VAULTS.WETHBULL.arb, network: EthChainId.ARBITRUM }
+  { address: LYRA_VAULTS.WEETHBULL_ARB.destinationChainAddress, network: EthChainId.ARBITRUM }
 )
   .onEventTransfer(async (event, ctx) => {
     for (const user of [event.args.from, event.args.to]) {
-      await updateUserSnapshotAndEmitPointUpdate(ctx, "WETHBULL", ctx.address, user)
+      await updateUserSnapshotAndEmitPointUpdate(ctx, "WEETHBULL_ARB", ctx.address, user)
     }
   })
 
@@ -133,9 +133,9 @@ ERC20Processor.bind(
 GlobalProcessor.bind(
   { network: EthChainId.ARBITRUM, startBlock: ARB_VAULT_PRICE_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
-  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WETHC.lyra, LYRA_VAULTS.WETHC.predepositUpgradeTimestampMs)
-  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WETHCS.lyra, LYRA_VAULTS.WETHCS.predepositUpgradeTimestampMs)
-  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WETHBULL.lyra, LYRA_VAULTS.WETHBULL.predepositUpgradeTimestampMs)
+  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHC_MAINNET.derive, LYRA_VAULTS.WEETHC.predepositUpgradeTimestampMs)
+  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHCS_MAINNET.derive, LYRA_VAULTS.WEETHCS.predepositUpgradeTimestampMs)
+  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHBULL_MAINNET.derive, LYRA_VAULTS.WEETHBULL.predepositUpgradeTimestampMs)
 },
   60 * 24,
   60 * 24
@@ -144,9 +144,9 @@ GlobalProcessor.bind(
 GlobalProcessor.bind(
   { network: EthChainId.ETHEREUM, startBlock: MAINNET_VAULT_PRICE_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
-  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WETHC.lyra, LYRA_VAULTS.WETHC.predepositUpgradeTimestampMs)
-  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WETHCS.lyra, LYRA_VAULTS.WETHCS.predepositUpgradeTimestampMs)
-  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WETHBULL.lyra, LYRA_VAULTS.WETHBULL.predepositUpgradeTimestampMs)
+  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHC_ARB.derive, LYRA_VAULTS.WEETHC.predepositUpgradeTimestampMs)
+  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHCS_ARB.derive, LYRA_VAULTS.WEETHCS.predepositUpgradeTimestampMs)
+  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHBULL_ABR.derive, LYRA_VAULTS.WEETHBULL.predepositUpgradeTimestampMs)
 },
   60 * 24,
   60 * 24
@@ -157,10 +157,10 @@ GlobalProcessor.bind(
 //////////////////////////////////////
 
 GlobalProcessor.bind(
-  { network: EthChainId.ETHEREUM, startBlock: MAINNET_VAULT_PRICE_START_BLOCK }
+  { network: EthChainId.LYRA, startBlock: MAINNET_VAULT_PRICE_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
   await updateUserExchangeSnapshotAndEmitPoints(ctx, "EBTC")
-  await updateUserExchangeSnapshotAndEmitPoints(ctx, "WETH")
+  await updateUserExchangeSnapshotAndEmitPoints(ctx, "WEETH")
 },
   60,
   60

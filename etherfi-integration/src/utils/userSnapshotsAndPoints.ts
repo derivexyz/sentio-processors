@@ -1,11 +1,12 @@
 import { EthChainId, EthContext, isNullAddress } from "@sentio/sdk/eth";
 import { erc20 } from "@sentio/sdk/eth/builtin";
 import { DeriveVaultUserSnapshot } from "../schema/store.js";
-import { LYRA_VAULTS, MILLISECONDS_PER_DAY, VAULT_POOLS, VaultConfig } from "../config.js";
+import { LYRA_VAULTS, MILLISECONDS_PER_DAY, VAULT_POOLS } from "../config.js";
 import { toUnderlyingBalance } from "./vaultTokenPrice.js";
 import { getAddress } from "ethers";
 import { BigDecimal } from "@sentio/sdk";
 import { getSwellSimpleStakingContract } from "../types/eth/swellsimplestaking.js";
+import { VaultConfig } from "@derivefinance/derive-sentio-utils";
 
 export async function updateUserSnapshotAndEmitPointUpdate(ctx: EthContext, vaultName: string, vaultTokenAddress: string, owner: string) {
     let [oldSnapshot, newSnapshot] = await updateDeriveVaultUserSnapshot(ctx, vaultName, vaultTokenAddress, owner)
@@ -22,7 +23,7 @@ export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: 
     let currentVaultTokenBalance = (await vaultTokenContractView.balanceOf(owner)).scaleDown(18)
     let currentSwellL2Balance = await getSwellL2Balance(ctx, owner, vaultTokenAddress)
     let totalBalance = currentSwellL2Balance.plus(currentVaultTokenBalance)
-    let underlyingBalance = await toUnderlyingBalance(ctx, LYRA_VAULTS[vaultName].lyra, totalBalance, currentTimestampMs)
+    let underlyingBalance = await toUnderlyingBalance(ctx, LYRA_VAULTS[vaultName].derive, totalBalance, currentTimestampMs)
 
     let lastSnapshot = await ctx.store.get(DeriveVaultUserSnapshot, `${owner}-${vaultTokenAddress}`)
 
@@ -62,8 +63,8 @@ export function emitUserPointUpdate(ctx: EthContext, vaultConfig: VaultConfig, l
     if (lastSnapshot.vaultBalance.isZero()) return;
 
     const elapsedDays = (Number(newSnapshot.timestampMs) - Number(lastSnapshot.timestampMs)) / MILLISECONDS_PER_DAY
-    const earnedEtherfiPoints = elapsedDays * vaultConfig.etherfiPointsPerDay * lastSnapshot.weETHEffectiveBalance.toNumber()
-    const earnedEigenlayerPoints = elapsedDays * vaultConfig.eigenlayerPointsPerDay * lastSnapshot.weETHEffectiveBalance.toNumber()
+    const earnedEtherfiPoints = elapsedDays * vaultConfig.pointMultipliersPerDay["etherfi"] * lastSnapshot.weETHEffectiveBalance.toNumber()
+    const earnedEigenlayerPoints = elapsedDays * vaultConfig.pointMultipliersPerDay["eigenlayer"] * lastSnapshot.weETHEffectiveBalance.toNumber()
     ctx.eventLogger.emit("point_update", {
         account: lastSnapshot.owner,
         assetAndSubIdOrVaultAddress: lastSnapshot.vaultAddress,

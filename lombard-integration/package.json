@@ -11,7 +11,8 @@
     "postinstall": "sentio gen"
   },
   "dependencies": {
-    "@sentio/sdk": "^2.43.2"
+    "@sentio/sdk": "^2.43.2",
+    "@derivefinance/derive-sentio-utils": "1.0.9"
   },
   "devDependencies": {
     "@sentio/cli": "^2.21.2",

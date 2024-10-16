@@ -1,13 +1,13 @@
 import axios from "axios"
 import { EthContext, isNullAddress } from "@sentio/sdk/eth";
-import { BigDecimal } from "@sentio/sdk";
 import { DeriveExchangeUserSnapshot } from "../schema/store.js";
-import { MILLISECONDS_PER_DAY, V2_ASSETS, V2AssetConfig } from "../config.js";
+import { MILLISECONDS_PER_DAY, V2_ASSETS } from "../config.js";
+import { v2, V2AssetConfig } from "@derivefinance/derive-sentio-utils"
 
 export async function updateUserExchangeSnapshotAndEmitPoints(ctx: EthContext, assetName: keyof typeof V2_ASSETS) {
 
     // make axios post request
-    const balances = await getBalances(ctx, V2_ASSETS[assetName].assetName, V2_ASSETS[assetName].assetAndSubId);
+    const balances: v2.V2EOABalance[] = await v2.getBalances(V2_ASSETS[assetName].assetName, V2_ASSETS[assetName].assetAndSubId, BigInt(ctx.timestamp.getTime()));
 
     for (const new_balance of balances) {
         let lastSnapshot = await ctx.store.get(DeriveExchangeUserSnapshot, new_balance.id)
@@ -22,9 +22,10 @@ export async function updateUserExchangeSnapshotAndEmitPoints(ctx: EthContext, a
             })
         }
 
-        await ctx.store.upsert(new_balance)
+        const new_snapshot = new DeriveExchangeUserSnapshot({ ...new_balance })
+        await ctx.store.upsert(new_snapshot)
 
-        await emitExchangePoints(ctx, V2_ASSETS[assetName], lastSnapshot, new_balance)
+        await emitExchangePoints(ctx, V2_ASSETS[assetName], lastSnapshot, new_snapshot)
     }
 }
 
@@ -39,10 +40,10 @@ async function emitExchangePoints(ctx: EthContext, v2AssetConfig: V2AssetConfig,
         account: lastSnapshot.eoa,
         assetAndSubIdOrVaultAddress: lastSnapshot.id,
         assetName: v2AssetConfig.assetName,
-        earnedEtherfiPoints: elapsedDays * v2AssetConfig.etherfiPointsPerDay * lastSnapshot.amount.toNumber(),
-        earnedEigenlayerPoints: 0,
-        earnedLombardPoints: elapsedDays * v2AssetConfig.lombardPointPerDay * lastSnapshot.amount.toNumber(),
-        earnedBabylonPoints: elapsedDays * v2AssetConfig.babylonPointsPerDay * lastSnapshot.amount.toNumber(),
+        earnedEtherfiPoints: elapsedDays * v2AssetConfig.pointMultipliersPerDay["etherfi"] * lastSnapshot.amount.toNumber(),
+        earnedEigenlayerPoints: elapsedDays * v2AssetConfig.pointMultipliersPerDay["eigenlayer"] * lastSnapshot.amount.toNumber(),
+        earnedLombardPoints: elapsedDays * v2AssetConfig.pointMultipliersPerDay["lombard"] * lastSnapshot.amount.toNumber(),
+        earnedBabylonPoints: elapsedDays * v2AssetConfig.pointMultipliersPerDay["babylon"] * lastSnapshot.amount.toNumber(),
 
         // last snapshot
         lastTimestampMs: lastSnapshot.timestampMs,
@@ -55,89 +56,4 @@ async function emitExchangePoints(ctx: EthContext, v2AssetConfig: V2AssetConfig,
     });
 
 
-}
-
-export async function getBalances(ctx: EthContext, v2AssetName: string, assetAndSubId: string): Promise<DeriveExchangeUserSnapshot[]> {
-    let currentTimestampMs = BigInt(ctx.timestamp.getTime())
-
-    const query = `
-        {
-            subAccountBalances(
-                where: {asset: "0x0000000000000000000000002bf0d5d2ca86584bc4cfb6fac7ad09d4143eb057", balance_gt: 0}
-            ) {
-                subaccount {
-                    matchingOwner {
-                        id
-                        owner
-                    }
-                }
-                balance
-            }
-        }`;
-    const result = await queryV2Subgraph(query)
-
-    if (!result || !result.data.subAccountBalances) {
-        console.log("No data found in subgraph for assetAndSubId: ", assetAndSubId);
-        return [];
-    }
-
-    // Create a map of merged balances by smartContractOwner
-    const combinedBalances = result.data.subAccountBalances
-        .filter((item: SubAccountBalance) => item.subaccount.matchingOwner !== null) // Filter out null matchingOwner
-        .reduce((acc: Map<string, BigDecimal>, item: SubAccountBalance) => {
-            const owner = item.subaccount.matchingOwner!.id;
-            const eoa = item.subaccount.matchingOwner!.owner || owner; // If not SCW, the owner is an EOA
-            const balance = new BigDecimal(item.balance);
-
-            acc.set(eoa, (acc.get(eoa) || new BigDecimal(0)).plus(balance));
-            return acc;
-        }, new Map<string, BigDecimal>());
-
-    // Convert the merged balances into DeriveExchangeUserSnapshot array
-    return Array.from(combinedBalances.entries()).map(([eoa, balance]) => (
-        new DeriveExchangeUserSnapshot({
-            id: `${eoa}-${assetAndSubId}`,
-            eoa: eoa,
-            tokenName: v2AssetName,
-            amount: balance,
-            timestampMs: currentTimestampMs
-        })
-    ));
-}
-
-export async function queryV2Subgraph(graphQLQuery: string) {
-    const options = {
-        method: 'POST',
-        url: 'https://app.sentio.xyz/api/v1/analytics/derive/v2_subgraph/sql/execute',
-        headers: {
-            'api-key': process.env.V2_SUBGRAPH_API_KEY,
-            'Content-Type': 'application/json'
-        },
-        data: {
-            query: graphQLQuery,
-        }
-    };
-
-    return axios.request(options)
-        .then(response => {
-            console.log(response.data);
-            return response.data;
-        })
-        .catch(error => {
-            console.error(error);
-        });
-}
-
-interface MatchingOwner {
-    id: string;
-    owner: string | null;
-}
-
-interface SubAccount {
-    matchingOwner: MatchingOwner | null;
-}
-
-interface SubAccountBalance {
-    balance: string;
-    subaccount: SubAccount;
 }
