@@ -1,0 +1,18 @@
+{
+  "private": false,
+  "name": "@derivefinance/derive-sentio-utils",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "version": "1.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@sentio/sdk": "^2.43.2",
+    "axios": "^1.7.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.2"
+  }
+}
