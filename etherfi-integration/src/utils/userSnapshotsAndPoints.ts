@@ -36,7 +36,7 @@ export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: 
             vaultAddress: lastSnapshot.vaultAddress,
             timestampMs: lastSnapshot.timestampMs,
             vaultBalance: lastSnapshot.vaultBalance,
-            weETHEffectiveBalance: lastSnapshot.weETHEffectiveBalance
+            underlyingEffectiveBalance: lastSnapshot.underlyingEffectiveBalance
         })
     }
 
@@ -48,7 +48,7 @@ export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: 
             vaultAddress: vaultTokenAddress,
             timestampMs: currentTimestampMs,
             vaultBalance: totalBalance,
-            weETHEffectiveBalance: underlyingBalance
+            underlyingEffectiveBalance: underlyingBalance
         }
     )
 
@@ -63,8 +63,8 @@ export function emitUserPointUpdate(ctx: EthContext, vaultConfig: VaultConfig, l
     if (lastSnapshot.vaultBalance.isZero()) return;
 
     const elapsedDays = (Number(newSnapshot.timestampMs) - Number(lastSnapshot.timestampMs)) / MILLISECONDS_PER_DAY
-    const earnedEtherfiPoints = elapsedDays * vaultConfig.pointMultipliersPerDay["etherfi"] * lastSnapshot.weETHEffectiveBalance.toNumber()
-    const earnedEigenlayerPoints = elapsedDays * vaultConfig.pointMultipliersPerDay["eigenlayer"] * lastSnapshot.weETHEffectiveBalance.toNumber()
+    const earnedEtherfiPoints = elapsedDays * vaultConfig.pointMultipliersPerDay["etherfi"] * lastSnapshot.underlyingEffectiveBalance.toNumber()
+    const earnedEigenlayerPoints = elapsedDays * vaultConfig.pointMultipliersPerDay["eigenlayer"] * lastSnapshot.underlyingEffectiveBalance.toNumber()
     ctx.eventLogger.emit("point_update", {
         account: lastSnapshot.owner,
         assetAndSubIdOrVaultAddress: lastSnapshot.vaultAddress,
@@ -77,11 +77,11 @@ export function emitUserPointUpdate(ctx: EthContext, vaultConfig: VaultConfig, l
         // last snapshot
         lastTimestampMs: lastSnapshot.timestampMs,
         lastBalance: lastSnapshot.vaultBalance,
-        lastEffectiveBalance: lastSnapshot.weETHEffectiveBalance,
+        lastEffectiveBalance: lastSnapshot.underlyingEffectiveBalance,
         // new snapshot
         newTimestampMs: newSnapshot.timestampMs,
         newBalance: newSnapshot.vaultBalance,
-        newEffectiveBalance: newSnapshot.weETHEffectiveBalance,
+        newEffectiveBalance: newSnapshot.underlyingEffectiveBalance,
     });
 }
 
@@ -97,9 +97,9 @@ async function getSwellL2Balance(ctx: EthContext, owner: string, vaultToken: str
     const swellSimpleStakingContract = getSwellSimpleStakingContract(VAULT_POOLS["SWELL_L2"].chainId, VAULT_POOLS["SWELL_L2"].address)
     console.log("Getting staked balance for", owner, vaultToken, ctx.blockNumber)
     const stakedBalance = (await swellSimpleStakingContract.stakedBalances(owner, vaultToken, { blockTag: ctx.blockNumber })).scaleDown(18)
-    console.log("Got staked balance", stakedBalance)
 
     if (!stakedBalance.isZero()) {
+        console.log("Got staked balance", stakedBalance)
         ctx.eventLogger.emit("swell_simple_staking_update", {
             account: owner,
             vaultToken: vaultToken,

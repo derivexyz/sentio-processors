@@ -80,11 +80,11 @@ ERC20Processor.bind(
 ////////////////////
 
 ERC20Processor.bind(
-  { address: LYRA_VAULTS.WEETHCS_ARB.destinationChainAddress, network: EthChainId.ARBITRUM }
+  { address: LYRA_VAULTS.WEETHC_ARB.destinationChainAddress, network: EthChainId.ARBITRUM }
 )
   .onEventTransfer(async (event, ctx) => {
     for (const user of [event.args.from, event.args.to]) {
-      await updateUserSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHCS_ARB, ctx.address, user)
+      await updateUserSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHC_ARB, ctx.address, user)
     }
   })
   // this time interval handles all three vaults (weETHC, weETHCS, weETHBULL)

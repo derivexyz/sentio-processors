@@ -52,7 +52,7 @@ export async function getBalances(v2AssetName: string, assetAndSubId: string, cu
 export async function queryV2Subgraph(graphQLQuery: string) {
     const options = {
         method: 'POST',
-        url: 'https://app.sentio.xyz/api/v1/analytics/derive/v2_subgraph/sql/execute',
+        url: 'https://app.sentio.xyz/api/v1/graphql/derive/v2_subgraph',
         headers: {
             'api-key': process.env.V2_SUBGRAPH_API_KEY,
             'Content-Type': 'application/json'
