@@ -3,14 +3,14 @@ type BalanceAdjusted @entity(immutable: true) {
   subaccount: SubAccount!
   asset: Asset!
   accountId: BigInt! # uint256
-  manager: Bytes! # address
+  manager: String! # address
   amount: BigDecimal! # int256
   preBalance: BigDecimal! # int256
   postBalance: BigDecimal! # int256
   tradeId: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  transactionHash: String!
 }
 
 type SubAccount @entity {
@@ -40,7 +40,7 @@ type SubAccountBalance @entity {
 }
 
 type Asset @entity {
-  id: Bytes! # bytes32 (assetAndSubId)
+  id: String! # (assetAndSubId)
   assetContract: AssetContract!
   subId: BigInt!
   name: String!
@@ -82,5 +82,5 @@ type Trade @entity(immutable: true) {
   amountBase: BigDecimal!
   blockNumber: BigInt!
   blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  transactionHash: String!
 }

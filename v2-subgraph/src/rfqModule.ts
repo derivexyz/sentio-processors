@@ -23,7 +23,7 @@ export function handleRFQTradeCompleted(event: RFQTradeCompletedEvent): void {
 
     // Load or create the asset
     let assetId = tradeData.asset.concat(Bytes.fromByteArray(Bytes.fromBigInt(tradeData.subId)))
-    let asset = Asset.load(assetId)
+    let asset = Asset.load(assetId.toHexString())
     if (!asset) {
         asset = handleNewAsset(assetId)
     }
@@ -36,7 +36,7 @@ export function handleRFQTradeCompleted(event: RFQTradeCompletedEvent): void {
     trade.amountBase = tradeData.baseAmt.abs().toBigDecimal().div(ONE)
     trade.blockNumber = event.block.number
     trade.blockTimestamp = event.block.timestamp
-    trade.transactionHash = event.transaction.hash
+    trade.transactionHash = event.transaction.hash.toHexString()
     trade.isRFQ = true
 
     trade.save()

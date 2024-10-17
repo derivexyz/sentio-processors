@@ -25,6 +25,10 @@ const ADDRESS_MAP = `{
   "0xd0711b9ebe84b778483709cde62bacfdbae13623":{ 
       "currency": "BTC",
       "type": "option"
+  },
+  "0x57b03e14d409adc7fab6cfc44b5886cad2d5f02b":{
+    "currency": "USDC",
+    "type": "spot"
   }
 }`
 
@@ -106,7 +110,7 @@ function getOptionDetails(subId: BigInt): OptionDetails {
 
 
 export function handleNewAsset(assetId: Bytes): Asset {
-  let asset = new Asset(assetId)
+  let asset = new Asset(assetId.toHexString())
   const decodedHash = decodeHashWithEthers(assetId)
 
   let assetContract = AssetContract.load(decodedHash.address)

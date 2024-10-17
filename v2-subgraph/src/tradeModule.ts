@@ -11,7 +11,7 @@ export function handleOrderMatched(event: OrderMatchedEvent): void {
   // Load or create the base Asset
   let baseAssetId = event.params.base
   // Handle Asset entity
-  let asset = Asset.load(baseAssetId)
+  let asset = Asset.load(baseAssetId.toHexString())
   if (asset == null) {
     asset = handleNewAsset(baseAssetId)
   }
@@ -29,7 +29,7 @@ export function handleOrderMatched(event: OrderMatchedEvent): void {
     throw new Error("Taker or maker subaccount not found")
   }
 
-  trade.base = baseAssetId
+  trade.base = asset.id
   trade.taker = taker.id
   trade.maker = maker.id
   trade.takerIsBid = event.params.takerIsBid
@@ -37,7 +37,7 @@ export function handleOrderMatched(event: OrderMatchedEvent): void {
   trade.amountBase = event.params.amtBase.toBigDecimal().div(ONE)
   trade.blockNumber = event.block.number
   trade.blockTimestamp = event.block.timestamp
-  trade.transactionHash = event.transaction.hash
+  trade.transactionHash = event.transaction.hash.toHexString()
   trade.isRFQ = false
 
   trade.save()
