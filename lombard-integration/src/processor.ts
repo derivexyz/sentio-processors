@@ -25,7 +25,7 @@ import { GlobalProcessor } from '@sentio/sdk/eth'
 
 for (const params of [
   DERIVE_VAULTS.LBTCPS,
-  DERIVE_VAULTS.LBTCPS_TESTNET,
+  // DERIVE_VAULTS.LBTCPS_TESTNET,
 ]) {
   ERC20Processor.bind(
     { address: params.destinationChainAddress, network: params.destinationChainId }
@@ -59,7 +59,7 @@ for (const params of [
 
 for (const params of [
   DERIVE_VAULTS.LBTCCS,
-  DERIVE_VAULTS.LBTCCS_TESTNET,
+  // DERIVE_VAULTS.LBTCCS_TESTNET,
 ]) {
   ERC20Processor.bind({ address: params.destinationChainAddress, network: params.destinationChainId })
     .onEventTransfer(async (event, ctx) => {
@@ -74,19 +74,19 @@ for (const params of [
 ////////////////////////////////////////
 for (const params of [
   { network: EthChainId.ETHEREUM, startBlock: MAINNET_VAULT_PRICE_START_BLOCK },
-  { network: EthChainId.BOB, startBlock: OP_SEPOLIA_VAULT_PRICE_START_BLOCK },
+  // { network: EthChainId.BOB, startBlock: OP_SEPOLIA_VAULT_PRICE_START_BLOCK },
 ]) {
 
   GlobalProcessor.bind(
     params
   ).onTimeInterval(async (_, ctx) => {
-    if (params.network === EthChainId.ETHEREUM) {
-      await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCPS)
-      await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCCS)
-    } else {
-      await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCPS_TESTNET)
-      await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCCS_TESTNET)
-    }
+    // if (params.network === EthChainId.ETHEREUM) {
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCPS)
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCCS)
+    // } else {
+    // await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCPS_TESTNET)
+    // await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCCS_TESTNET)
+    // }
   },
     60 * 1,
     60 * 1

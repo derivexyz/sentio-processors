@@ -131,22 +131,22 @@ ERC20Processor.bind(
 ////////////////////////////////////////
 
 GlobalProcessor.bind(
-  { network: EthChainId.ARBITRUM, startBlock: ARB_VAULT_PRICE_START_BLOCK }
+  { network: EthChainId.ETHEREUM, startBlock: ARB_VAULT_PRICE_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
-  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHC_MAINNET.derive, LYRA_VAULTS.WEETHC.predepositUpgradeTimestampMs)
-  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHCS_MAINNET.derive, LYRA_VAULTS.WEETHCS.predepositUpgradeTimestampMs)
-  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHBULL_MAINNET.derive, LYRA_VAULTS.WEETHBULL.predepositUpgradeTimestampMs)
+  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHC_MAINNET.derive, LYRA_VAULTS.WEETHC_MAINNET.predepositUpgradeTimestampMs)
+  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHCS_MAINNET.derive, LYRA_VAULTS.WEETHCS_MAINNET.predepositUpgradeTimestampMs)
+  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHBULL_MAINNET.derive, LYRA_VAULTS.WEETHBULL_MAINNET.predepositUpgradeTimestampMs)
 },
   60 * 24,
   60 * 24
 )
 
 GlobalProcessor.bind(
-  { network: EthChainId.ETHEREUM, startBlock: MAINNET_VAULT_PRICE_START_BLOCK }
+  { network: EthChainId.ARBITRUM, startBlock: MAINNET_VAULT_PRICE_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
-  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHC_ARB.derive, LYRA_VAULTS.WEETHC.predepositUpgradeTimestampMs)
-  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHCS_ARB.derive, LYRA_VAULTS.WEETHCS.predepositUpgradeTimestampMs)
-  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHBULL_ABR.derive, LYRA_VAULTS.WEETHBULL.predepositUpgradeTimestampMs)
+  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHC_ARB.derive, LYRA_VAULTS.WEETHC_ARB.predepositUpgradeTimestampMs)
+  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHCS_ARB.derive, LYRA_VAULTS.WEETHCS_ARB.predepositUpgradeTimestampMs)
+  await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHBULL_ABR.derive, LYRA_VAULTS.WEETHBULL_ABR.predepositUpgradeTimestampMs)
 },
   60 * 24,
   60 * 24

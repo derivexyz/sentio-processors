@@ -90,8 +90,13 @@ async function getSwellL2Balance(ctx: EthContext, owner: string, vaultToken: str
         return new BigDecimal(0)
     }
 
-    const swellSimpleStakingContract = getSwellSimpleStakingContract(EthChainId.BITLAYER, VAULT_POOLS["SWELL_L2"].address)
-    const stakedBalance = (await swellSimpleStakingContract.stakedBalances(owner, vaultToken)).scaleDown(18)
+    if (ctx.blockNumber <= 19617616) {
+        return new BigDecimal(0)
+    }
+
+    const swellSimpleStakingContract = getSwellSimpleStakingContract(VAULT_POOLS["SWELL_L2"].chainId, VAULT_POOLS["SWELL_L2"].address)
+    console.log("Getting staked balance for", owner, vaultToken, ctx.blockNumber)
+    const stakedBalance = (await swellSimpleStakingContract.stakedBalances(owner, vaultToken, { blockTag: ctx.blockNumber })).scaleDown(18)
 
     if (!stakedBalance.isZero()) {
         ctx.eventLogger.emit("swell_simple_staking_update", {

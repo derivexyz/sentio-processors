@@ -102,7 +102,7 @@ export const LYRA_VAULTS: Record<string, VaultConfig> = {
 
 export const V2_ASSETS: Record<string, V2AssetConfig> = {
     WEETH: {
-        assetAndSubId: "0x",
+        assetAndSubId: "0x", // asset: 0xF30EE744fCfd135A135E6a4e327e01d0f697e6Ec
         assetName: "WEETH",
         pointMultipliersPerDay: {
             etherfi: 20000,
@@ -112,7 +112,7 @@ export const V2_ASSETS: Record<string, V2AssetConfig> = {
         }
     },
     EBTC: {
-        assetAndSubId: "0x",
+        assetAndSubId: "0x", // asset: 0x95FE344A0f420A7aC1B1E69CB1474179a40db882
         assetName: "EBTC",
         pointMultipliersPerDay: {
             etherfi: 20000,
