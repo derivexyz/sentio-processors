@@ -5,7 +5,7 @@ export async function getBalances(v2AssetName: string, assetAndSubId: string, cu
     const query = `
         {
             subAccountBalances(
-                where: {asset: "${assetAndSubId}, balance_gt: 0}
+                where: {asset: "${assetAndSubId}", balance_gt: 0}
                 block: {number: "${lyraBlock}"}
             ) {
                 subaccount {
@@ -19,7 +19,7 @@ export async function getBalances(v2AssetName: string, assetAndSubId: string, cu
         }`;
     const result = await queryV2Subgraph(query)
 
-    console.log("Result from subgraph: ", result.data);
+    console.log("Result from subgraph: ", result?.data);
     if (!result || !result.data || !result.data.subAccountBalances || result.data.subAccountBalances.length === 0) {
         console.log("No data found in subgraph for assetAndSubId: ", assetAndSubId);
         return [];
@@ -62,14 +62,15 @@ export async function queryV2Subgraph(graphQLQuery: string) {
         }
     };
 
-    return axios.request(options)
-        .then(response => {
-            console.log(response.data);
-            return response.data;
-        })
-        .catch(error => {
-            console.error(error);
-        });
+    try {
+        const response = await axios.request(options);
+        return response;
+    } catch (error) {
+        console.error("Error message: ", error.message);
+        console.error("Error stack: ", error.stack);
+
+        return null;
+    }
 }
 
 interface MatchingOwner {

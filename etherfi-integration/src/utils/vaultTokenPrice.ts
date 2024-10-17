@@ -20,9 +20,9 @@ export async function saveCurrentVaultTokenPrice(ctx: EthContext, vaultTokenAddr
     }
 
     // This is taken exclusively from the Lyra Chain
-    const vaultTokenContract = getLyraVaultTokenContract(EthChainId.BITLAYER, vaultTokenAddress)
+    const vaultTokenContract = getLyraVaultTokenContract(EthChainId.LYRA, vaultTokenAddress)
     try {
-        const lyraProvider = getProvider(EthChainId.BITLAYER)
+        const lyraProvider = getProvider(EthChainId.LYRA)
         const lyraBlock = await estimateBlockNumberAtDate(lyraProvider, new Date(nowMs))
         const shareToUnderlying = (await vaultTokenContract.getSharesValue("1000000000000000000", { blockTag: lyraBlock })).scaleDown(18)
         console.log(`For ${vaultTokenAddress} got ${shareToUnderlying}`)

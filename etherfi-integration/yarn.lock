@@ -103,10 +103,10 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@derivefinance/derive-sentio-utils@1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@derivefinance/derive-sentio-utils/-/derive-sentio-utils-1.0.12.tgz#3ab5f033f8017a2a195b76b1d97fb3daae27cabe"
-  integrity sha512-kZO4ZP0jCtJ5dkZ7IOAKE0wfCQdRk94IddvvQURMr4Pmq+w3zkxB3+n7aC60CtMd1RflXI4KPrwRx/2pAj1Qjw==
+"@derivefinance/derive-sentio-utils@1.0.15":
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/@derivefinance/derive-sentio-utils/-/derive-sentio-utils-1.0.15.tgz#1d0bb5545a60e35652c1a02c1f5b24ef75071aa6"
+  integrity sha512-LJHyUtWjNFB9wDqqNzI4VCnwmaE/T1s5O0d4xVzCyZiyJEadeVrZOEzDB/i2OQi7a5aLHB+nGWVjDwkuat3yoQ==
   dependencies:
     "@sentio/sdk" "^2.44.1"
     axios "^1.7.4"
