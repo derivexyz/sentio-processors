@@ -7,7 +7,7 @@ import { v2, V2AssetConfig } from "@derivefinance/derive-sentio-utils"
 export async function updateUserExchangeSnapshotAndEmitPoints(ctx: EthContext, assetName: keyof typeof V2_ASSETS) {
 
     // make axios post request
-    const balances: v2.V2EOABalance[] = await v2.getBalances(V2_ASSETS[assetName].assetName, V2_ASSETS[assetName].assetAndSubId, BigInt(ctx.timestamp.getTime()));
+    const balances: v2.V2EOABalance[] = await v2.getBalances(V2_ASSETS[assetName].assetName, V2_ASSETS[assetName].assetAndSubId, BigInt(ctx.timestamp.getTime()), ctx.blockNumber);
 
     for (const new_balance of balances) {
         let lastSnapshot = await ctx.store.get(DeriveExchangeUserSnapshot, new_balance.id)

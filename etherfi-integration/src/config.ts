@@ -10,12 +10,21 @@ export const INTEGRATOR_SEASONS: IntegratorSeason[] = [
     }
 ]
 
+export enum VaultName {
+    WEETHC_MAINNET = "WEETHC_MAINNET",
+    WEETHC_ARB = "WEETHC_ARB",
+    WEETHCS_MAINNET = "WEETHCS_MAINNET",
+    WEETHCS_ARB = "WEETHCS_ARB",
+    WEETHBULL_MAINNET = "WEETHBULL_MAINNET",
+    WEETHBULL_ARB = "WEETHBULL_ARB"
+}
+
 export const ARB_VAULT_PRICE_START_BLOCK = 217000000;
 export const MAINNET_VAULT_PRICE_START_BLOCK = 20000000;
 
-export const LYRA_VAULTS: Record<string, VaultConfig> = {
+export const LYRA_VAULTS: Record<VaultName, VaultConfig> = {
     WEETHC_MAINNET: {
-        vaultName: "WEETHC_MAINNET",
+        vaultName: VaultName.WEETHC_MAINNET,
         destinationChainId: EthChainId.ETHEREUM,
         deriveChainId: EthChainId.LYRA,
         destinationChainAddress: "0xcAe44C93f7B3b519Fc28f9d4F7Ae22dE770a907b",
@@ -57,7 +66,7 @@ export const LYRA_VAULTS: Record<string, VaultConfig> = {
         }
     },
     WEETHCS_ARB: {
-        vaultName: "WEETHCS_ARB",
+        vaultName: VaultName.WEETHCS_ARB,
         destinationChainId: EthChainId.ARBITRUM,
         deriveChainId: EthChainId.LYRA,
         destinationChainAddress: "0xb7F56c1a952D3AE664A83971BFfa5c1706947dBD",
@@ -71,7 +80,7 @@ export const LYRA_VAULTS: Record<string, VaultConfig> = {
         }
     },
     WEETHBULL_MAINNET: {
-        vaultName: "WEETHBULL_MAINNET",
+        vaultName: VaultName.WEETHBULL_MAINNET,
         destinationChainId: EthChainId.ETHEREUM,
         deriveChainId: EthChainId.LYRA,
         destinationChainAddress: "0xC7EE36E027272F11135792FaDE64D9365Cc583B5",
@@ -85,7 +94,7 @@ export const LYRA_VAULTS: Record<string, VaultConfig> = {
         }
     },
     WEETHBULL_ARB: {
-        vaultName: "WEETHBULL_ARB",
+        vaultName: VaultName.WEETHBULL_ARB,
         destinationChainId: EthChainId.ARBITRUM,
         deriveChainId: EthChainId.LYRA,
         destinationChainAddress: "0xC7EE36E027272F11135792FaDE64D9365Cc583B5",
@@ -98,6 +107,15 @@ export const LYRA_VAULTS: Record<string, VaultConfig> = {
             "eigenlayer": 21,
         }
     },
+}
+
+
+export const VAULT_POOLS: Record<string, VaultPoolConfig> = {
+    SWELL_L2: {
+        chainId: EthChainId.ETHEREUM,
+        address: "0x38D43a6Cb8DA0E855A42fB6b0733A0498531d774",
+        name: "SWELL_L2"
+    }
 }
 
 export const V2_ASSETS: Record<string, V2AssetConfig> = {
@@ -123,10 +141,4 @@ export const V2_ASSETS: Record<string, V2AssetConfig> = {
     },
 }
 
-export const VAULT_POOLS: Record<string, VaultPoolConfig> = {
-    SWELL_L2: {
-        chainId: EthChainId.ETHEREUM,
-        address: "0x38D43a6Cb8DA0E855A42fB6b0733A0498531d774",
-        name: "SWELL_L2"
-    }
-}
+export const DERIVE_V2_DEPOSIT_START_BLOCK = 12600000; // September 1st

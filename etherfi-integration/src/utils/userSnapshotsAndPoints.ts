@@ -1,14 +1,14 @@
 import { EthChainId, EthContext, isNullAddress } from "@sentio/sdk/eth";
 import { erc20 } from "@sentio/sdk/eth/builtin";
 import { DeriveVaultUserSnapshot } from "../schema/store.js";
-import { LYRA_VAULTS, MILLISECONDS_PER_DAY, VAULT_POOLS } from "../config.js";
+import { LYRA_VAULTS, MILLISECONDS_PER_DAY, VAULT_POOLS, VaultName } from "../config.js";
 import { toUnderlyingBalance } from "./vaultTokenPrice.js";
 import { getAddress } from "ethers";
 import { BigDecimal } from "@sentio/sdk";
 import { getSwellSimpleStakingContract } from "../types/eth/swellsimplestaking.js";
 import { VaultConfig } from "@derivefinance/derive-sentio-utils";
 
-export async function updateUserSnapshotAndEmitPointUpdate(ctx: EthContext, vaultName: string, vaultTokenAddress: string, owner: string) {
+export async function updateUserSnapshotAndEmitPointUpdate(ctx: EthContext, vaultName: VaultName, vaultTokenAddress: string, owner: string) {
     let [oldSnapshot, newSnapshot] = await updateDeriveVaultUserSnapshot(ctx, vaultName, vaultTokenAddress, owner)
     emitUserPointUpdate(ctx, LYRA_VAULTS[vaultName], oldSnapshot, newSnapshot)
 }
@@ -97,6 +97,7 @@ async function getSwellL2Balance(ctx: EthContext, owner: string, vaultToken: str
     const swellSimpleStakingContract = getSwellSimpleStakingContract(VAULT_POOLS["SWELL_L2"].chainId, VAULT_POOLS["SWELL_L2"].address)
     console.log("Getting staked balance for", owner, vaultToken, ctx.blockNumber)
     const stakedBalance = (await swellSimpleStakingContract.stakedBalances(owner, vaultToken, { blockTag: ctx.blockNumber })).scaleDown(18)
+    console.log("Got staked balance", stakedBalance)
 
     if (!stakedBalance.isZero()) {
         ctx.eventLogger.emit("swell_simple_staking_update", {

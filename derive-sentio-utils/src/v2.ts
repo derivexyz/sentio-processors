@@ -1,11 +1,12 @@
 import { BigDecimal } from "@sentio/sdk";
 import axios from "axios";
 
-export async function getBalances(v2AssetName: string, assetAndSubId: string, currentTimestampMs: bigint): Promise<V2EOABalance[]> {
+export async function getBalances(v2AssetName: string, assetAndSubId: string, currentTimestampMs: bigint, lyraBlock: number): Promise<V2EOABalance[]> {
     const query = `
         {
             subAccountBalances(
-                where: {asset: "0x0000000000000000000000002bf0d5d2ca86584bc4cfb6fac7ad09d4143eb057", balance_gt: 0}
+                where: {asset: "${assetAndSubId}, balance_gt: 0}
+                block: {number: "${lyraBlock}"}
             ) {
                 subaccount {
                     matchingOwner {
@@ -18,7 +19,8 @@ export async function getBalances(v2AssetName: string, assetAndSubId: string, cu
         }`;
     const result = await queryV2Subgraph(query)
 
-    if (!result || !result.data.subAccountBalances) {
+    console.log("Result from subgraph: ", result.data);
+    if (!result || !result.data || !result.data.subAccountBalances || result.data.subAccountBalances.length === 0) {
         console.log("No data found in subgraph for assetAndSubId: ", assetAndSubId);
         return [];
     }
