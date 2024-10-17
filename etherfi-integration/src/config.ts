@@ -1,4 +1,5 @@
 import { IntegratorSeason, V2AssetConfig, VaultConfig, VaultPoolConfig } from "@derivefinance/derive-sentio-utils";
+import { BigDecimal } from "@sentio/sdk";
 import { EthChainId } from "@sentio/sdk/eth";
 
 export const MILLISECONDS_PER_DAY = 60 * 60 * 1000 * 24;
@@ -25,6 +26,7 @@ export const MAINNET_VAULT_PRICE_START_BLOCK = 20000000;
 export const LYRA_VAULTS: Record<VaultName, VaultConfig> = {
     WEETHC_MAINNET: {
         vaultName: VaultName.WEETHC_MAINNET,
+        subaccountId: BigInt(5738),
         destinationChainId: EthChainId.ETHEREUM,
         deriveChainId: EthChainId.LYRA,
         destinationChainAddress: "0xcAe44C93f7B3b519Fc28f9d4F7Ae22dE770a907b",
@@ -39,6 +41,7 @@ export const LYRA_VAULTS: Record<VaultName, VaultConfig> = {
     },
     WEETHC_ARB: {
         vaultName: "WEETHC_ARB",
+        subaccountId: BigInt(5738),
         destinationChainId: EthChainId.ARBITRUM,
         deriveChainId: EthChainId.LYRA,
         destinationChainAddress: "0x1cbbC18CB128AA470733eD29938Ab4878B0BEF20",
@@ -53,6 +56,7 @@ export const LYRA_VAULTS: Record<VaultName, VaultConfig> = {
     },
     WEETHCS_MAINNET: {
         vaultName: "WEETHCS_MAINNET",
+        subaccountId: BigInt(10301),
         destinationChainId: EthChainId.ETHEREUM,
         deriveChainId: EthChainId.LYRA,
         destinationChainAddress: "0x91e3489da66eD36ebe0Be1013D87449447FD2bFa",
@@ -67,6 +71,7 @@ export const LYRA_VAULTS: Record<VaultName, VaultConfig> = {
     },
     WEETHCS_ARB: {
         vaultName: VaultName.WEETHCS_ARB,
+        subaccountId: BigInt(10301),
         destinationChainId: EthChainId.ARBITRUM,
         deriveChainId: EthChainId.LYRA,
         destinationChainAddress: "0xb7F56c1a952D3AE664A83971BFfa5c1706947dBD",
@@ -81,6 +86,7 @@ export const LYRA_VAULTS: Record<VaultName, VaultConfig> = {
     },
     WEETHBULL_MAINNET: {
         vaultName: VaultName.WEETHBULL_MAINNET,
+        subaccountId: BigInt(10303),
         destinationChainId: EthChainId.ETHEREUM,
         deriveChainId: EthChainId.LYRA,
         destinationChainAddress: "0xC7EE36E027272F11135792FaDE64D9365Cc583B5",
@@ -95,6 +101,7 @@ export const LYRA_VAULTS: Record<VaultName, VaultConfig> = {
     },
     WEETHBULL_ARB: {
         vaultName: VaultName.WEETHBULL_ARB,
+        subaccountId: BigInt(10303),
         destinationChainId: EthChainId.ARBITRUM,
         deriveChainId: EthChainId.LYRA,
         destinationChainAddress: "0xC7EE36E027272F11135792FaDE64D9365Cc583B5",
@@ -142,3 +149,26 @@ export const V2_ASSETS: Record<string, V2AssetConfig> = {
 }
 
 export const DERIVE_V2_DEPOSIT_START_BLOCK = 12600000; // September 1st
+export const DERIVE_V2_SUBACCOUNTS_ADDRESS = "0xE7603DF191D699d8BD9891b821347dbAb889E5a5";
+export const DERIVE_V2_MATCHING_ADDRESS = "0xeB8d770ec18DB98Db922E9D83260A585b9F0DeAD";
+
+export type PointUpdateEvent = {
+    account: string;
+    assetAndSubIdOrVaultAddress: string;
+    assetName: string;
+
+    // earned points
+    earnedEtherfiPoints: number
+    earnedEigenlayerPoints: number;
+    earnedLombardPoints: number;
+    earnedBabylonPoints: number;
+    // last snapshot
+    lastTimestampMs: bigint;
+    lastBalance: BigDecimal;
+    lastEffectiveBalance: BigDecimal;
+    // new snapshot
+    newTimestampMs: bigint;
+    newBalance: BigDecimal;
+    newEffectiveBalance: BigDecimal;
+
+}

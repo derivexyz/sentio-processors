@@ -1,7 +1,7 @@
 import { EthChainId, EthContext, isNullAddress } from "@sentio/sdk/eth";
 import { erc20 } from "@sentio/sdk/eth/builtin";
 import { DeriveVaultUserSnapshot } from "../schema/store.js";
-import { LYRA_VAULTS, MILLISECONDS_PER_DAY, VAULT_POOLS, VaultName } from "../config.js";
+import { LYRA_VAULTS, MILLISECONDS_PER_DAY, PointUpdateEvent, VAULT_POOLS, VaultName } from "../config.js";
 import { toUnderlyingBalance } from "./vaultTokenPrice.js";
 import { getAddress } from "ethers";
 import { BigDecimal } from "@sentio/sdk";
@@ -65,9 +65,11 @@ export function emitUserPointUpdate(ctx: EthContext, vaultConfig: VaultConfig, l
     const elapsedDays = (Number(newSnapshot.timestampMs) - Number(lastSnapshot.timestampMs)) / MILLISECONDS_PER_DAY
     const earnedEtherfiPoints = elapsedDays * vaultConfig.pointMultipliersPerDay["etherfi"] * lastSnapshot.underlyingEffectiveBalance.toNumber()
     const earnedEigenlayerPoints = elapsedDays * vaultConfig.pointMultipliersPerDay["eigenlayer"] * lastSnapshot.underlyingEffectiveBalance.toNumber()
-    ctx.eventLogger.emit("point_update", {
+
+    const data: PointUpdateEvent = {
         account: lastSnapshot.owner,
         assetAndSubIdOrVaultAddress: lastSnapshot.vaultAddress,
+        assetName: vaultConfig.vaultName,
 
         // earned points
         earnedEtherfiPoints: earnedEtherfiPoints,
@@ -82,7 +84,9 @@ export function emitUserPointUpdate(ctx: EthContext, vaultConfig: VaultConfig, l
         newTimestampMs: newSnapshot.timestampMs,
         newBalance: newSnapshot.vaultBalance,
         newEffectiveBalance: newSnapshot.underlyingEffectiveBalance,
-    });
+    }
+
+    ctx.eventLogger.emit("point_update", data);
 }
 
 async function getSwellL2Balance(ctx: EthContext, owner: string, vaultToken: string): Promise<BigDecimal> {

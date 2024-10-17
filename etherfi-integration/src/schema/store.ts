@@ -75,6 +75,14 @@ export class DeriveExchangeUserSnapshot extends AbstractEntity  {
 
 	@Required
 	@Column("String")
+	assetAndSubId: String
+
+	@Required
+	@Column("BigInt")
+	subaccountId: BigInt
+
+	@Required
+	@Column("String")
 	tokenName: String
 
 	@Required
@@ -89,6 +97,25 @@ export class DeriveExchangeUserSnapshot extends AbstractEntity  {
 	@Column("BigInt")
 	timestampMs: BigInt
   constructor(data: Partial<DeriveExchangeUserSnapshot>) {super()}
+}
+
+@Entity("Subaccount")
+export class Subaccount extends AbstractEntity  {
+
+	@Required
+	@Column("ID")
+	id: ID
+
+	@Required
+	@Column("BigInt")
+	subaccountId: BigInt
+
+	@Column("String")
+	eoa?: String
+
+	@Column("String")
+	smartContractWallet?: String
+  constructor(data: Partial<Subaccount>) {super()}
 }
 
 
@@ -111,16 +138,26 @@ type DeriveVaultTokenPrice @entity {
 
 type DeriveExchangeUserSnapshot @entity {
     id: ID!
+    assetAndSubId: String!
+    subaccountId: BigInt!
     tokenName: String!
     amount: BigDecimal!
     eoa: String!
     timestampMs: BigInt!
+}
+
+type Subaccount @entity {
+    id: ID!
+    subaccountId: BigInt!
+    eoa: String
+    smartContractWallet: String
 }`
 DatabaseSchema.register({
   source,
   entities: {
     "DeriveVaultUserSnapshot": DeriveVaultUserSnapshot,
 		"DeriveVaultTokenPrice": DeriveVaultTokenPrice,
-		"DeriveExchangeUserSnapshot": DeriveExchangeUserSnapshot
+		"DeriveExchangeUserSnapshot": DeriveExchangeUserSnapshot,
+		"Subaccount": Subaccount
   }
 })
