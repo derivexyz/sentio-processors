@@ -2,8 +2,8 @@ import {
   BalanceAdjusted as BalanceAdjustedEvent,
   Transfer as TransferEvent
 } from "../generated/subaccounts/SubAccounts"
-import { BalanceAdjusted, SubAccountBalance, SubAccount, Asset, Account} from "../generated/schema"
-import { handleNewAsset, ONE }  from "./utils"
+import { BalanceAdjusted, SubAccountBalance, SubAccount, Asset, Account } from "../generated/schema"
+import { handleNewAsset, ONE } from "./utils"
 
 
 
@@ -45,7 +45,7 @@ export function handleBalanceAdjusted(event: BalanceAdjustedEvent): void {
   // Handle UserBalance entity
   let subaccountBalanceId = subaccountId.concat(assetId.toString())
   let subaccountBalance = SubAccountBalance.load(subaccountBalanceId)
-  
+
   if (subaccountBalance == null) {
     subaccountBalance = new SubAccountBalance(subaccountBalanceId)
     subaccountBalance.subaccount = subaccountId
@@ -92,7 +92,7 @@ export function handleTransfer(event: TransferEvent): void {
     subaccount.subaccountId = event.params.tokenId
     subaccount.owner = accountId
     subaccount.save()
-  }else{
+  } else {
     subaccount.owner = accountId
     subaccount.save()
   }
