@@ -13,3 +13,12 @@
 ### Uploading to sentio
 - `npx @sentio/cli login --api-key <api-key>` (create API key in sentio dashboard)
 - `yarn sentio upload`
+
+### Getting v2 assetAndSubId
+Go to v2-subgraph, SQL query all assets and find asset_id for given asset using `SQL Editor`
+
+
+Does not work (but should fix)
+Use `chisel` in terminal
+Run `bytes32(uint(uint160(<V2_ASSET_ADDRESS>)) << 96) | bytes32(<SUB_ID>)` 
+
