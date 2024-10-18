@@ -2,6 +2,8 @@ import { IntegratorSeason, V2AssetConfig, VaultConfig, VaultPoolConfig } from "@
 import { BigDecimal } from "@sentio/sdk";
 import { EthChainId } from "@sentio/sdk/eth";
 
+// tODO: still need to figure out how to give exact balances at specific block...
+
 export const MILLISECONDS_PER_DAY = 60 * 60 * 1000 * 24;
 
 export const INTEGRATOR_SEASONS: IntegratorSeason[] = [
@@ -127,7 +129,7 @@ export const VAULT_POOLS: Record<string, VaultPoolConfig> = {
 
 export const V2_ASSETS: Record<string, V2AssetConfig> = {
     WEETH: {
-        assetAndSubId: "0x", // asset: 0xF30EE744fCfd135A135E6a4e327e01d0f697e6Ec
+        assetAndSubId: "0xf30ee744fcfd135a135e6a4e327e01d0f697e6ec000000000000000000000000", // asset: 0xF30EE744fCfd135A135E6a4e327e01d0f697e6Ec
         assetName: "WEETH",
         pointMultipliersPerDay: {
             etherfi: 20000,
@@ -137,7 +139,7 @@ export const V2_ASSETS: Record<string, V2AssetConfig> = {
         }
     },
     EBTC: {
-        assetAndSubId: "0x", // asset: 0x95FE344A0f420A7aC1B1E69CB1474179a40db882
+        assetAndSubId: "0x95fe344a0f420a7ac1b1e69cb1474179a40db882000000000000000000000000", // asset: 0x95FE344A0f420A7aC1B1E69CB1474179a40db882
         assetName: "EBTC",
         pointMultipliersPerDay: {
             etherfi: 20000,
@@ -148,7 +150,7 @@ export const V2_ASSETS: Record<string, V2AssetConfig> = {
     },
 }
 
-export const DERIVE_V2_DEPOSIT_START_BLOCK = 12600000; // September 1st
+export const DERIVE_V2_DEPOSIT_START_BLOCK = 10000000; // July 3rd
 export const DERIVE_V2_SUBACCOUNTS_ADDRESS = "0xE7603DF191D699d8BD9891b821347dbAb889E5a5";
 export const DERIVE_V2_MATCHING_ADDRESS = "0xeB8d770ec18DB98Db922E9D83260A585b9F0DeAD";
 
