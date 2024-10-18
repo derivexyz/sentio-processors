@@ -57,6 +57,10 @@ export class DeriveVaultTokenPrice extends AbstractEntity  {
 	vaultAddress: String
 
 	@Required
+	@Column("String")
+	vaultName: String
+
+	@Required
 	@Column("BigInt")
 	timestampMs: BigInt
 
@@ -129,9 +133,11 @@ const source = `type DeriveVaultUserSnapshot @entity {
     underlyingEffectiveBalance: BigDecimal!
 }
 
+
 type DeriveVaultTokenPrice @entity {
     id: ID!
     vaultAddress: String!
+    vaultName: String!
     timestampMs: BigInt!
     vaultToUnderlying: BigDecimal!
 }

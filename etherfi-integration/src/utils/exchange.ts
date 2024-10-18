@@ -48,10 +48,12 @@ export async function updateExchangeTimestamp(ctx: EthContext) {
         const usersToUpdate = getUsersToUpdate(userSnapshots);
         console.log(`Found ${usersToUpdate.length} users to update exchange points`)
         for (const [eoa, assetAndSubId, tokenName] of usersToUpdate) {
-            promises.push(async () => {
+            promises.push((async () => {
+                console.log(`Calculating total subaccount balances for ${eoa} ${tokenName} ${assetAndSubId}`)
                 const [totalBalance, lastTimestampMs, newTimestampMs] = await getTotalSubaccountBalances(ctx, assetAndSubId, eoa)
+                console.log(`Updating exchange points for ${eoa} ${tokenName} ${totalBalance} ${lastTimestampMs} ${newTimestampMs}`)
                 await emitUserExchangePoints(ctx, V2_ASSETS[tokenName], eoa, lastTimestampMs, newTimestampMs, totalBalance, totalBalance)
-            });
+            })());
         }
         await Promise.all(promises);
     } catch (e) {

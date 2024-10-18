@@ -23,7 +23,7 @@ export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: 
     let currentVaultTokenBalance = (await vaultTokenContractView.balanceOf(owner)).scaleDown(18)
     let currentSwellL2Balance = await getSwellL2Balance(ctx, owner, vaultTokenAddress)
     let totalBalance = currentSwellL2Balance.plus(currentVaultTokenBalance)
-    let underlyingBalance = await toUnderlyingBalance(ctx, LYRA_VAULTS[vaultName].derive, totalBalance, currentTimestampMs)
+    let [underlyingBalance, _] = await toUnderlyingBalance(ctx, LYRA_VAULTS[vaultName].derive, totalBalance, currentTimestampMs)
 
     let lastSnapshot = await ctx.store.get(DeriveVaultUserSnapshot, `${owner}-${vaultTokenAddress}`)
 
@@ -80,10 +80,12 @@ export function emitUserPointUpdate(ctx: EthContext, vaultConfig: VaultConfig, l
         lastTimestampMs: lastSnapshot.timestampMs,
         lastBalance: lastSnapshot.vaultBalance,
         lastEffectiveBalance: lastSnapshot.underlyingEffectiveBalance,
+
         // new snapshot
         newTimestampMs: newSnapshot.timestampMs,
         newBalance: newSnapshot.vaultBalance,
         newEffectiveBalance: newSnapshot.underlyingEffectiveBalance,
+
     }
 
     ctx.eventLogger.emit("point_update", data);
@@ -99,7 +101,6 @@ async function getSwellL2Balance(ctx: EthContext, owner: string, vaultToken: str
     }
 
     const swellSimpleStakingContract = getSwellSimpleStakingContract(VAULT_POOLS["SWELL_L2"].chainId, VAULT_POOLS["SWELL_L2"].address)
-    console.log("Getting staked balance for", owner, vaultToken, ctx.blockNumber)
     const stakedBalance = (await swellSimpleStakingContract.stakedBalances(owner, vaultToken, { blockTag: ctx.blockNumber })).scaleDown(18)
 
     if (!stakedBalance.isZero()) {

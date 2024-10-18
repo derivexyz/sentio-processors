@@ -19,7 +19,7 @@ export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: 
     const vaultTokenContractView = erc20.getERC20ContractOnContext(ctx, vaultTokenAddress)
     let currentTimestampMs = BigInt(ctx.timestamp.getTime())
     let currentShareBalance = (await vaultTokenContractView.balanceOf(owner)).scaleDown(DERIVE_VAULTS[vaultName].vaultDecimals)
-    let [underlyingBalance, vaultToUnderlying] = await toUnderlyingBalance(ctx, DERIVE_VAULTS[vaultName].derive, currentShareBalance, currentTimestampMs)
+    let [underlyingBalance, _] = await toUnderlyingBalance(ctx, DERIVE_VAULTS[vaultName].derive, currentShareBalance, currentTimestampMs)
 
     let lastSnapshot = await ctx.store.get(DeriveVaultUserSnapshot, `${owner}-${vaultTokenAddress}`)
 
@@ -33,7 +33,6 @@ export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: 
             timestampMs: lastSnapshot.timestampMs,
             vaultBalance: lastSnapshot.vaultBalance,
             underlyingEffectiveBalance: lastSnapshot.underlyingEffectiveBalance,
-            vaultToUnderlying: lastSnapshot.vaultToUnderlying
         })
     }
 
@@ -46,7 +45,6 @@ export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: 
             timestampMs: currentTimestampMs,
             vaultBalance: currentShareBalance,
             underlyingEffectiveBalance: underlyingBalance,
-            vaultToUnderlying: vaultToUnderlying
         }
     )
 
@@ -72,12 +70,10 @@ export function emitUserPointUpdate(ctx: EthContext, vaultConfig: VaultConfig, l
         lastTimestampMs: lastSnapshot.timestampMs,
         lastVaultBalance: lastSnapshot.vaultBalance,
         lastUnderlyingEffectiveBalance: lastSnapshot.underlyingEffectiveBalance,
-        lastVaultToUnderlying: lastSnapshot.vaultToUnderlying,
         // new snapshot
         newTimestampMs: newSnapshot.timestampMs,
         newVaultBalance: newSnapshot.vaultBalance,
         newUnderlyingEffectiveBalance: newSnapshot.underlyingEffectiveBalance,
-        newVaultToUnderlying: newSnapshot.vaultToUnderlying,
         // testnet vs prod
         is_mainnet: ctx.chainId === EthChainId.ETHEREUM,
         // season
