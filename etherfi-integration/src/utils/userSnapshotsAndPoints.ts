@@ -1,7 +1,7 @@
 import { EthChainId, EthContext, isNullAddress } from "@sentio/sdk/eth";
 import { erc20 } from "@sentio/sdk/eth/builtin";
 import { DeriveVaultUserSnapshot } from "../schema/store.js";
-import { LYRA_VAULTS, MILLISECONDS_PER_DAY, PointUpdateEvent, VAULT_POOLS, VaultName } from "../config.js";
+import { DERIVE_VAULTS, MILLISECONDS_PER_DAY, PointUpdateEvent, VAULT_POOLS, VaultName } from "../config.js";
 import { toUnderlyingBalance } from "./vaultTokenPrice.js";
 import { getAddress } from "ethers";
 import { BigDecimal } from "@sentio/sdk";
@@ -10,20 +10,20 @@ import { VaultConfig } from "@derivefinance/derive-sentio-utils";
 
 export async function updateUserSnapshotAndEmitPointUpdate(ctx: EthContext, vaultName: VaultName, vaultTokenAddress: string, owner: string) {
     let [oldSnapshot, newSnapshot] = await updateDeriveVaultUserSnapshot(ctx, vaultName, vaultTokenAddress, owner)
-    emitUserPointUpdate(ctx, LYRA_VAULTS[vaultName], oldSnapshot, newSnapshot)
+    emitUserPointUpdate(ctx, DERIVE_VAULTS[vaultName], oldSnapshot, newSnapshot)
 }
 
-export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: keyof typeof LYRA_VAULTS, vaultTokenAddress: string, owner: string): Promise<[DeriveVaultUserSnapshot?, DeriveVaultUserSnapshot?]> {
+export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: keyof typeof DERIVE_VAULTS, vaultTokenAddress: string, owner: string): Promise<[DeriveVaultUserSnapshot?, DeriveVaultUserSnapshot?]> {
     vaultTokenAddress = getAddress(vaultTokenAddress)
 
-    if (isNullAddress(owner)) return [undefined, undefined];
+    if (isNullAddress(owner) || isVaultPool(owner)) return [undefined, undefined];
 
     const vaultTokenContractView = erc20.getERC20ContractOnContext(ctx, vaultTokenAddress)
     let currentTimestampMs = BigInt(ctx.timestamp.getTime())
     let currentVaultTokenBalance = (await vaultTokenContractView.balanceOf(owner)).scaleDown(18)
     let currentSwellL2Balance = await getSwellL2Balance(ctx, owner, vaultTokenAddress)
     let totalBalance = currentSwellL2Balance.plus(currentVaultTokenBalance)
-    let [underlyingBalance, _] = await toUnderlyingBalance(ctx, LYRA_VAULTS[vaultName].derive, totalBalance, currentTimestampMs)
+    let [underlyingBalance, _] = await toUnderlyingBalance(ctx, DERIVE_VAULTS[vaultName].derive, totalBalance, currentTimestampMs)
 
     let lastSnapshot = await ctx.store.get(DeriveVaultUserSnapshot, `${owner}-${vaultTokenAddress}`)
 
@@ -113,4 +113,8 @@ async function getSwellL2Balance(ctx: EthContext, owner: string, vaultToken: str
         })
     }
     return stakedBalance
+}
+
+function isVaultPool(address: string): boolean {
+    return Object.values(VAULT_POOLS).some(pool => pool.address == address)
 }

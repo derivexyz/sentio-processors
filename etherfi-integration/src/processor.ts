@@ -1,6 +1,6 @@
 import { EthChainId } from '@sentio/sdk/eth'
 import { ERC20Processor } from '@sentio/sdk/eth/builtin'
-import { ARB_VAULT_PRICE_START_BLOCK, DERIVE_V2_DEPOSIT_START_BLOCK, DERIVE_V2_SUBACCOUNTS_ADDRESS, LYRA_VAULTS, MAINNET_VAULT_PRICE_START_BLOCK, V2_ASSETS, VaultName } from './config.js'
+import { ARB_VAULT_PRICE_START_BLOCK, DERIVE_V2_DEPOSIT_START_BLOCK, DERIVE_V2_SUBACCOUNTS_ADDRESS, DERIVE_VAULTS, MAINNET_VAULT_PRICE_START_BLOCK, V2_ASSETS, VaultName } from './config.js'
 import { DeriveExchangeUserSnapshot, DeriveVaultUserSnapshot } from './schema/store.js'
 import { updateUserSnapshotAndEmitPointUpdate } from './utils/userSnapshotsAndPoints.js'
 import { saveCurrentVaultTokenPrice } from './utils/vaultTokenPrice.js'
@@ -30,7 +30,7 @@ import { SubaccountsProcessor } from './types/eth/subaccounts.js'
 ///////////////////
 
 ERC20Processor.bind(
-    { address: LYRA_VAULTS.WEETHC_MAINNET.destinationChainAddress, network: EthChainId.ETHEREUM }
+    { address: DERIVE_VAULTS.WEETHC_MAINNET.destinationChainAddress, network: EthChainId.ETHEREUM }
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
@@ -58,7 +58,7 @@ ERC20Processor.bind(
     )
 
 ERC20Processor.bind(
-    { address: LYRA_VAULTS.WEETHCS_MAINNET.destinationChainAddress, network: EthChainId.ETHEREUM }
+    { address: DERIVE_VAULTS.WEETHCS_MAINNET.destinationChainAddress, network: EthChainId.ETHEREUM }
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
@@ -67,7 +67,7 @@ ERC20Processor.bind(
     })
 
 ERC20Processor.bind(
-    { address: LYRA_VAULTS.WEETHBULL_MAINNET.destinationChainAddress, network: EthChainId.ETHEREUM }
+    { address: DERIVE_VAULTS.WEETHBULL_MAINNET.destinationChainAddress, network: EthChainId.ETHEREUM }
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
@@ -81,7 +81,7 @@ ERC20Processor.bind(
 ////////////////////
 
 ERC20Processor.bind(
-    { address: LYRA_VAULTS.WEETHC_ARB.destinationChainAddress, network: EthChainId.ARBITRUM }
+    { address: DERIVE_VAULTS.WEETHC_ARB.destinationChainAddress, network: EthChainId.ARBITRUM }
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
@@ -109,7 +109,7 @@ ERC20Processor.bind(
     )
 
 ERC20Processor.bind(
-    { address: LYRA_VAULTS.WEETHCS_ARB.destinationChainAddress, network: EthChainId.ARBITRUM }
+    { address: DERIVE_VAULTS.WEETHCS_ARB.destinationChainAddress, network: EthChainId.ARBITRUM }
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
@@ -118,7 +118,7 @@ ERC20Processor.bind(
     })
 
 ERC20Processor.bind(
-    { address: LYRA_VAULTS.WEETHBULL_ARB.destinationChainAddress, network: EthChainId.ARBITRUM }
+    { address: DERIVE_VAULTS.WEETHBULL_ARB.destinationChainAddress, network: EthChainId.ARBITRUM }
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
@@ -134,9 +134,9 @@ ERC20Processor.bind(
 GlobalProcessor.bind(
     { network: EthChainId.ETHEREUM, startBlock: MAINNET_VAULT_PRICE_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
-    await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHC_MAINNET)
-    await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHCS_MAINNET)
-    await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHBULL_MAINNET)
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHC_MAINNET)
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHCS_MAINNET)
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHBULL_MAINNET)
 },
     60 * 24,
     60 * 24
@@ -145,9 +145,9 @@ GlobalProcessor.bind(
 GlobalProcessor.bind(
     { network: EthChainId.ARBITRUM, startBlock: ARB_VAULT_PRICE_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
-    await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHC_ARB)
-    await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHCS_ARB)
-    await saveCurrentVaultTokenPrice(ctx, LYRA_VAULTS.WEETHBULL_ARB)
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHC_ARB)
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHCS_ARB)
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHBULL_ARB)
 },
     60 * 24,
     60 * 24

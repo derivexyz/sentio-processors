@@ -103,14 +103,6 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@derivefinance/derive-sentio-utils@1.0.17":
-  version "1.0.17"
-  resolved "https://registry.yarnpkg.com/@derivefinance/derive-sentio-utils/-/derive-sentio-utils-1.0.17.tgz#a73f829c6a6fbbd6e7141269289f515125e65486"
-  integrity sha512-S8hRzVuezm6fobPabWr1dQexq6sc+HFLyJGxG2YCkNmERrC8reZApNojY+fKfMmwiCq3eop06yNlwPV7d5AhMw==
-  dependencies:
-    "@sentio/sdk" "^2.44.1"
-    axios "^1.7.4"
-
 "@esbuild/aix-ppc64@0.23.1":
   version "0.23.1"
   resolved "https://registry.yarnpkg.com/@esbuild/aix-ppc64/-/aix-ppc64-0.23.1.tgz#51299374de171dbd80bb7d838e1cfce9af36f353"
@@ -1396,7 +1388,7 @@
   resolved "https://registry.yarnpkg.com/@sentio/runtime/-/runtime-2.44.1.tgz#8129c99007d251f599256a684b5b29913df310ae"
   integrity sha512-6RqYssugdcLs06tx4bZcvHQbzCJOjztMIJwXAXryH5cyqdtFiYzTeJKK41jR2pah1cjsU951bvMb2WjqMEfpVQ==
 
-"@sentio/sdk@^2.43.2", "@sentio/sdk@^2.44.1":
+"@sentio/sdk@^2.43.2":
   version "2.44.1"
   resolved "https://registry.yarnpkg.com/@sentio/sdk/-/sdk-2.44.1.tgz#238910aa6ca90c2e05a2fcf252207d2760b25368"
   integrity sha512-cZ4avgEZw1G2hvmNmpKnvNlwHjLSua8VYYh3F/kBQYUwhAmb5N4FzERVOgJwtsXzVf5rqlqVuldjs9d6hAzpmg==

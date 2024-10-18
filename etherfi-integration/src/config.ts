@@ -27,7 +27,7 @@ export enum VaultName {
 export const ARB_VAULT_PRICE_START_BLOCK = 217000000;
 export const MAINNET_VAULT_PRICE_START_BLOCK = 20000000;
 
-export const LYRA_VAULTS: Record<VaultName, VaultConfig> = {
+export const DERIVE_VAULTS: Record<VaultName, VaultConfig> = {
     WEETHC_MAINNET: {
         vaultName: VaultName.WEETHC_MAINNET,
         subaccountId: BigInt(5738),

@@ -1,7 +1,7 @@
 import axios from "axios"
 import { EthChainId, EthContext, getProvider, isNullAddress } from "@sentio/sdk/eth";
 import { DeriveExchangeUserSnapshot, Subaccount } from "../schema/store.js";
-import { DERIVE_V2_MATCHING_ADDRESS, LYRA_VAULTS, MILLISECONDS_PER_DAY, PointUpdateEvent, V2_ASSETS } from "../config.js";
+import { DERIVE_V2_MATCHING_ADDRESS, DERIVE_VAULTS, MILLISECONDS_PER_DAY, PointUpdateEvent, V2_ASSETS } from "../config.js";
 import { isVaultSubaccount, V2AssetConfig } from "@derivefinance/derive-sentio-utils"
 import { getMatchingContract } from "../types/eth/matching.js";
 import { getLightAccountContract } from "../types/eth/lightaccount.js";
@@ -168,7 +168,7 @@ async function getSubaccountDetails(ctx: EthContext, owner: string | undefined, 
 
 
 async function getSubaccountOwnerFromMatching(ctx: EthContext, subaccountId: bigint): Promise<string | undefined> {
-    if (isVaultSubaccount(subaccountId, Object.values(LYRA_VAULTS))) {
+    if (isVaultSubaccount(subaccountId, Object.values(DERIVE_VAULTS))) {
         return undefined
     }
 

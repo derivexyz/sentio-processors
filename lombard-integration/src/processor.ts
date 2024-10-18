@@ -1,6 +1,6 @@
 import { EthChainId } from '@sentio/sdk/eth'
 import { ERC20Processor } from '@sentio/sdk/eth/builtin'
-import { DERIVE_VAULTS, MAINNET_VAULT_PRICE_START_BLOCK, OP_SEPOLIA_VAULT_PRICE_START_BLOCK } from './config.js'
+import { DERIVE_VAULTS, MAINNET_VAULT_PRICE_START_BLOCK } from './config.js'
 import { DeriveVaultUserSnapshot } from './schema/store.js'
 import { updateUserSnapshotAndEmitPointUpdate } from './utils/userSnapshotsAndPoints.js'
 import { saveCurrentVaultTokenPrice } from './utils/vaultTokenPrice.js'
