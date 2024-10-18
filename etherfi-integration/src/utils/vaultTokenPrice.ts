@@ -15,8 +15,6 @@ export async function saveCurrentVaultTokenPrice(ctx: EthContext, vaultTokenAddr
     if (predepositUpgradeTimestampMs && nowMsBigInt < BigInt(predepositUpgradeTimestampMs)) {
         // console.log(`Skipping token price save at time ${nowMsBigInt} for ${vaultTokenAddress} as it's before pre-deposit upgrade`)
         return
-    } else {
-        console.log(`${vaultTokenAddress}, ${nowMsBigInt}, ${predepositUpgradeTimestampMs}`)
     }
 
     // This is taken exclusively from the Lyra Chain
@@ -25,7 +23,6 @@ export async function saveCurrentVaultTokenPrice(ctx: EthContext, vaultTokenAddr
         const lyraProvider = getProvider(EthChainId.LYRA)
         const lyraBlock = await estimateBlockNumberAtDate(lyraProvider, new Date(nowMs))
         const shareToUnderlying = (await vaultTokenContract.getSharesValue("1000000000000000000", { blockTag: lyraBlock })).scaleDown(18)
-        console.log(`For ${vaultTokenAddress} got ${shareToUnderlying}`)
         await ctx.store.upsert(new DeriveVaultTokenPrice({
             id: `${vaultTokenAddress}-${nowMsBigInt}`,
             vaultAddress: vaultTokenAddress,
@@ -51,14 +48,12 @@ export async function toUnderlyingBalance(ctx: EthContext, vaultAddress: string,
         { field: "timestampMs", op: ">", value: lowerBound }
     ])
 
-    console.log(`Looking through prices nearby for vault ${vaultAddress} with length ${pricesNearby.length} at timestamp ${snapshotTimestampMs} with bounds ${lowerBound} and ${upperBound}`)
     let tokenPriceWithinBounds: DeriveVaultTokenPrice | undefined = await _find_closest_snapshot(pricesNearby, snapshotTimestampMs)
 
     // handle the last batch
     if (!tokenPriceWithinBounds) {
         return vaultBalance
     }
-    console.log(`Found token price within bounds for vault ${vaultAddress}`)
     return tokenPriceWithinBounds.vaultToUnderlying.multipliedBy(vaultBalance)
 }
 

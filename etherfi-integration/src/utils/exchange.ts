@@ -12,7 +12,6 @@ export async function updateExchangeBalance(ctx: EthContext, assetName: keyof ty
     const eoa = await getEOA(ctx, subaccountId)
 
     if (!eoa) {
-        console.log("No eoa found for subaccount")
         return
     }
     const assetAndSubId = V2_ASSETS[assetName].assetAndSubId
@@ -47,15 +46,16 @@ export async function updateExchangeTimestamp(ctx: EthContext) {
     try {
         const promises = [];
         const usersToUpdate = getUsersToUpdate(userSnapshots);
-        for (const [eoa, assetAndSubId] of usersToUpdate) {
+        console.log(`Found ${usersToUpdate.length} users to update exchange points`)
+        for (const [eoa, assetAndSubId, tokenName] of usersToUpdate) {
             promises.push(async () => {
                 const [totalBalance, lastTimestampMs, newTimestampMs] = await getTotalSubaccountBalances(ctx, assetAndSubId, eoa)
-                await emitUserExchangePoints(ctx, V2_ASSETS["etherfi"], eoa, lastTimestampMs, newTimestampMs, totalBalance, totalBalance)
+                await emitUserExchangePoints(ctx, V2_ASSETS[tokenName], eoa, lastTimestampMs, newTimestampMs, totalBalance, totalBalance)
             });
         }
         await Promise.all(promises);
     } catch (e) {
-        console.log("onTimeInterval vault error", e.message, ctx.timestamp);
+        console.log("onTimeInterval when updating exchange timestamp", e.message, e.data);
     }
 }
 
@@ -78,8 +78,8 @@ async function emitUserExchangePoints(ctx: EthContext, v2AssetConfig: V2AssetCon
 
         // last snapshot
         lastTimestampMs: lastTimestampMs ? lastTimestampMs : BigInt(0),
-        lastBalance: lastBalance,
-        lastEffectiveBalance: lastBalance, // same in the case of exchanges
+        lastBalance: lastTimestampMs ? lastBalance : BigDecimal(0),
+        lastEffectiveBalance: lastTimestampMs ? lastBalance : BigDecimal(0), // same in the case of exchanges
         // new snapshot
         newTimestampMs: newTimestampMs,
         newBalance: newBalance,
@@ -88,10 +88,10 @@ async function emitUserExchangePoints(ctx: EthContext, v2AssetConfig: V2AssetCon
     ctx.eventLogger.emit("point_update", data);
 }
 
-function getUsersToUpdate(allExchangeSnapshots: DeriveExchangeUserSnapshot[]): [string, string][] {
-    const usersToUpdate = new Set<[string, string]>()
+function getUsersToUpdate(allExchangeSnapshots: DeriveExchangeUserSnapshot[]): [string, string, string][] {
+    const usersToUpdate = new Set<[string, string, string]>()
     for (const snapshot of allExchangeSnapshots) {
-        usersToUpdate.add([snapshot.eoa, snapshot.assetAndSubId])
+        usersToUpdate.add([snapshot.eoa, snapshot.assetAndSubId, snapshot.tokenName])
     }
 
     return Array.from(usersToUpdate)

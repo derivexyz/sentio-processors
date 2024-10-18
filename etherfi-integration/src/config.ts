@@ -2,7 +2,9 @@ import { IntegratorSeason, V2AssetConfig, VaultConfig, VaultPoolConfig } from "@
 import { BigDecimal } from "@sentio/sdk";
 import { EthChainId } from "@sentio/sdk/eth";
 
-// tODO: still need to figure out how to give exact balances at specific block...
+// TODO: still need to figure out how to give exact balances at specific block...
+// TODO: some issue where the points are not accruing at time intervals
+// TODO: points not updating
 
 export const MILLISECONDS_PER_DAY = 60 * 60 * 1000 * 24;
 

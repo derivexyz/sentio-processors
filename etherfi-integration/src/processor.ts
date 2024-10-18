@@ -50,7 +50,7 @@ ERC20Processor.bind(
             }
             await Promise.all(promises);
         } catch (e) {
-            console.log("onTimeInterval vault error", e.message, ctx.timestamp);
+            console.log("erc20 processor vault error", e.message, e.data);
         }
     },
         60 * 24,
@@ -101,7 +101,7 @@ ERC20Processor.bind(
             }
             await Promise.all(promises);
         } catch (e) {
-            console.log("onTimeInterval error", e.message, ctx.timestamp);
+            console.log("erc20 processor vault error", e.message, e.data);
         }
     },
         60 * 24,
@@ -177,11 +177,10 @@ SubaccountsProcessor.bind(
 
 GlobalProcessor.bind(
     { network: EthChainId.LYRA, startBlock: DERIVE_V2_DEPOSIT_START_BLOCK }
+).onTimeInterval(async (_, ctx) => {
+    await updateExchangeTimestamp(ctx)
+},
+    60 * 24,
+    60 * 24
 )
-    .onTimeInterval(async (_, ctx) => {
-        await updateExchangeTimestamp(ctx)
-    },
-        60 * 24,
-        60 * 24
-    )
 
