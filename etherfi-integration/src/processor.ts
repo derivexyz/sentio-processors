@@ -3,11 +3,11 @@ import { ERC20Processor } from '@sentio/sdk/eth/builtin'
 import { ARB_VAULT_PRICE_START_BLOCK, DERIVE_V2_DEPOSIT_START_BLOCK, DERIVE_VAULTS, excludedSubaccounts, MAINNET_VAULT_PRICE_START_BLOCK, V2_ASSETS, VaultName } from './config.js'
 import { updateVaultSnapshotAndEmitPointUpdate } from './utils/vaults.js'
 import { GlobalProcessor } from '@sentio/sdk/eth'
-import { SubaccountsProcessor } from './types/eth/subaccounts.js'
 import { saveCurrentVaultTokenPrice } from '@derivefinance/derive-sentio-utils/dist/vaults/tokenPrice.js'
 import { schemas, v2 } from '@derivefinance/derive-sentio-utils'
 import { emitUserExchangePoints } from './utils/exchange.js'
 import { DERIVE_V2_SUBACCOUNTS_ADDRESS } from '@derivefinance/derive-sentio-utils/dist/v2/constants.js'
+import { SubaccountsProcessor } from '@derivefinance/derive-sentio-utils/dist/types/eth/subaccounts.js'
 
 /////////////////
 // Methodology //
