@@ -6,8 +6,6 @@ import { EthChainId } from "@sentio/sdk/eth";
 // TODO: some issue where the points are not accruing at time intervals
 // TODO: points not updating
 
-export const MILLISECONDS_PER_DAY = 60 * 60 * 1000 * 24;
-
 export const INTEGRATOR_SEASONS: IntegratorSeason[] = [
     {
         name: "season_1",
@@ -153,8 +151,9 @@ export const V2_ASSETS: Record<string, vaults.V2AssetConfig> = {
 }
 
 export const DERIVE_V2_DEPOSIT_START_BLOCK = 10000000; // July 3rd
-export const DERIVE_V2_SUBACCOUNTS_ADDRESS = "0xE7603DF191D699d8BD9891b821347dbAb889E5a5";
-export const DERIVE_V2_MATCHING_ADDRESS = "0xeB8d770ec18DB98Db922E9D83260A585b9F0DeAD";
+
+// exclude all subaccounts in the vault configs
+export const excludedSubaccounts = [...new Set(Object.values(DERIVE_VAULTS).map(config => config.subaccountId))];
 
 export type PointUpdateEvent = {
     account: string;

@@ -1,12 +1,13 @@
 import { EthChainId } from '@sentio/sdk/eth'
 import { ERC20Processor } from '@sentio/sdk/eth/builtin'
-import { ARB_VAULT_PRICE_START_BLOCK, DERIVE_V2_DEPOSIT_START_BLOCK, DERIVE_V2_SUBACCOUNTS_ADDRESS, DERIVE_VAULTS, MAINNET_VAULT_PRICE_START_BLOCK, V2_ASSETS, VaultName } from './config.js'
-import { updateUserSnapshotAndEmitPointUpdate } from './utils/userSnapshotsAndPoints.js'
+import { ARB_VAULT_PRICE_START_BLOCK, DERIVE_V2_DEPOSIT_START_BLOCK, DERIVE_VAULTS, excludedSubaccounts, MAINNET_VAULT_PRICE_START_BLOCK, V2_ASSETS, VaultName } from './config.js'
+import { updateVaultSnapshotAndEmitPointUpdate } from './utils/vaults.js'
 import { GlobalProcessor } from '@sentio/sdk/eth'
-import { updateExchangeBalance, updateExchangeTimestamp } from './utils/exchange.js'
 import { SubaccountsProcessor } from './types/eth/subaccounts.js'
 import { saveCurrentVaultTokenPrice } from '@derivefinance/derive-sentio-utils/dist/vaults/tokenPrice.js'
-import { schemas } from '@derivefinance/derive-sentio-utils'
+import { schemas, v2 } from '@derivefinance/derive-sentio-utils'
+import { emitUserExchangePoints } from './utils/exchange.js'
+import { DERIVE_V2_SUBACCOUNTS_ADDRESS } from '@derivefinance/derive-sentio-utils/dist/v2/constants.js'
 
 /////////////////
 // Methodology //
@@ -34,7 +35,7 @@ ERC20Processor.bind(
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            await updateUserSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHC_MAINNET, ctx.address, user)
+            await updateVaultSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHC_MAINNET, ctx.address, user)
         }
     })
     // this time interval handles all three vaults (weETHC, weETHCS, weETHBULL)
@@ -45,7 +46,7 @@ ERC20Processor.bind(
             const promises = [];
             for (const snapshot of userSnapshots) {
                 promises.push(
-                    await updateUserSnapshotAndEmitPointUpdate(ctx, snapshot.vaultName as VaultName, snapshot.vaultAddress, snapshot.owner)
+                    await updateVaultSnapshotAndEmitPointUpdate(ctx, snapshot.vaultName as VaultName, snapshot.vaultAddress, snapshot.owner)
                 );
             }
             await Promise.all(promises);
@@ -62,7 +63,7 @@ ERC20Processor.bind(
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            await updateUserSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHCS_MAINNET, ctx.address, user)
+            await updateVaultSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHCS_MAINNET, ctx.address, user)
         }
     })
 
@@ -71,7 +72,7 @@ ERC20Processor.bind(
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            await updateUserSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHBULL_MAINNET, ctx.address, user)
+            await updateVaultSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHBULL_MAINNET, ctx.address, user)
         }
     })
 
@@ -85,7 +86,7 @@ ERC20Processor.bind(
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            await updateUserSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHC_ARB, ctx.address, user)
+            await updateVaultSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHC_ARB, ctx.address, user)
         }
     })
     // this time interval handles all three vaults (weETHC, weETHCS, weETHBULL)
@@ -96,7 +97,7 @@ ERC20Processor.bind(
             const promises = [];
             for (const snapshot of userSnapshots) {
                 promises.push(
-                    await updateUserSnapshotAndEmitPointUpdate(ctx, snapshot.vaultName as VaultName, snapshot.vaultAddress, snapshot.owner)
+                    await updateVaultSnapshotAndEmitPointUpdate(ctx, snapshot.vaultName as VaultName, snapshot.vaultAddress, snapshot.owner)
                 );
             }
             await Promise.all(promises);
@@ -113,7 +114,7 @@ ERC20Processor.bind(
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            await updateUserSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHCS_ARB, ctx.address, user)
+            await updateVaultSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHCS_ARB, ctx.address, user)
         }
     })
 
@@ -122,7 +123,7 @@ ERC20Processor.bind(
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            await updateUserSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHBULL_ARB, ctx.address, user)
+            await updateVaultSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHBULL_ARB, ctx.address, user)
         }
     })
 
@@ -162,7 +163,7 @@ SubaccountsProcessor.bind(
     { address: DERIVE_V2_SUBACCOUNTS_ADDRESS, network: EthChainId.LYRA, startBlock: DERIVE_V2_DEPOSIT_START_BLOCK }
 )
     .onEventBalanceAdjusted(async (event, ctx) => {
-        await updateExchangeBalance(ctx, "EBTC", event.args.accountId, event.args.postBalance.scaleDown(18))
+        await v2.snapshot.updateExchangeBalance(ctx, V2_ASSETS["EBTC"], event.args.accountId, event.args.postBalance.scaleDown(18), excludedSubaccounts, emitUserExchangePoints)
     }, ebtc_filter)
 
 
@@ -171,14 +172,14 @@ SubaccountsProcessor.bind(
     { address: DERIVE_V2_SUBACCOUNTS_ADDRESS, network: EthChainId.LYRA, startBlock: DERIVE_V2_DEPOSIT_START_BLOCK }
 )
     .onEventBalanceAdjusted(async (event, ctx) => {
-        await updateExchangeBalance(ctx, "WEETH", event.args.accountId, event.args.postBalance.scaleDown(18))
+        await v2.snapshot.updateExchangeBalance(ctx, V2_ASSETS["WEETH"], event.args.accountId, event.args.postBalance.scaleDown(18), excludedSubaccounts, emitUserExchangePoints)
     }, weeth_filter)
 
 
 GlobalProcessor.bind(
     { network: EthChainId.LYRA, startBlock: DERIVE_V2_DEPOSIT_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
-    await updateExchangeTimestamp(ctx)
+    await v2.snapshot.updateExchangeTimestamp(ctx, V2_ASSETS, emitUserExchangePoints)
 },
     60 * 24,
     60 * 24

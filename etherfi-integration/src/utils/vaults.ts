@@ -1,18 +1,19 @@
 import { EthChainId, EthContext, isNullAddress } from "@sentio/sdk/eth";
 import { erc20 } from "@sentio/sdk/eth/builtin";
-import { DERIVE_VAULTS, MILLISECONDS_PER_DAY, PointUpdateEvent, VAULT_POOLS, VaultName } from "../config.js";
+import { DERIVE_VAULTS, PointUpdateEvent, VAULT_POOLS, VaultName } from "../config.js";
 import { getAddress } from "ethers";
 import { BigDecimal } from "@sentio/sdk";
 import { getSwellSimpleStakingContract } from "../types/eth/swellsimplestaking.js";
 import { schemas, vaults } from "@derivefinance/derive-sentio-utils";
 import { toUnderlyingBalance } from "@derivefinance/derive-sentio-utils/dist/vaults/tokenPrice.js";
+import { MILLISECONDS_PER_DAY } from "@derivefinance/derive-sentio-utils/dist/constants.js";
 
-export async function updateUserSnapshotAndEmitPointUpdate(ctx: EthContext, vaultName: VaultName, vaultTokenAddress: string, owner: string) {
-    let [oldSnapshot, newSnapshot] = await updateDeriveVaultUserSnapshot(ctx, vaultName, vaultTokenAddress, owner)
+export async function updateVaultSnapshotAndEmitPointUpdate(ctx: EthContext, vaultName: VaultName, vaultTokenAddress: string, owner: string) {
+    let [oldSnapshot, newSnapshot] = await updateVaultUserSnapshot(ctx, vaultName, vaultTokenAddress, owner)
     emitUserPointUpdate(ctx, DERIVE_VAULTS[vaultName], oldSnapshot, newSnapshot)
 }
 
-export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: keyof typeof DERIVE_VAULTS, vaultTokenAddress: string, owner: string): Promise<[schemas.DeriveVaultUserSnapshot?, schemas.DeriveVaultUserSnapshot?]> {
+export async function updateVaultUserSnapshot(ctx: EthContext, vaultName: keyof typeof DERIVE_VAULTS, vaultTokenAddress: string, owner: string): Promise<[schemas.DeriveVaultUserSnapshot?, schemas.DeriveVaultUserSnapshot?]> {
     vaultTokenAddress = getAddress(vaultTokenAddress)
 
     if (isNullAddress(owner) || isVaultPool(owner)) return [undefined, undefined];
