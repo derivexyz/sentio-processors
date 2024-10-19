@@ -1,19 +1,18 @@
 import { EthChainId, EthContext, isNullAddress } from "@sentio/sdk/eth";
 import { erc20 } from "@sentio/sdk/eth/builtin";
-import { DeriveVaultUserSnapshot } from "../schema/store.js";
 import { DERIVE_VAULTS, MILLISECONDS_PER_DAY, PointUpdateEvent, VAULT_POOLS, VaultName } from "../config.js";
-import { toUnderlyingBalance } from "./vaultTokenPrice.js";
 import { getAddress } from "ethers";
 import { BigDecimal } from "@sentio/sdk";
 import { getSwellSimpleStakingContract } from "../types/eth/swellsimplestaking.js";
-import { VaultConfig } from "@derivefinance/derive-sentio-utils";
+import { schemas, vaults } from "@derivefinance/derive-sentio-utils";
+import { toUnderlyingBalance } from "@derivefinance/derive-sentio-utils/dist/vaults/tokenPrice.js";
 
 export async function updateUserSnapshotAndEmitPointUpdate(ctx: EthContext, vaultName: VaultName, vaultTokenAddress: string, owner: string) {
     let [oldSnapshot, newSnapshot] = await updateDeriveVaultUserSnapshot(ctx, vaultName, vaultTokenAddress, owner)
     emitUserPointUpdate(ctx, DERIVE_VAULTS[vaultName], oldSnapshot, newSnapshot)
 }
 
-export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: keyof typeof DERIVE_VAULTS, vaultTokenAddress: string, owner: string): Promise<[DeriveVaultUserSnapshot?, DeriveVaultUserSnapshot?]> {
+export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: keyof typeof DERIVE_VAULTS, vaultTokenAddress: string, owner: string): Promise<[schemas.DeriveVaultUserSnapshot?, schemas.DeriveVaultUserSnapshot?]> {
     vaultTokenAddress = getAddress(vaultTokenAddress)
 
     if (isNullAddress(owner) || isVaultPool(owner)) return [undefined, undefined];
@@ -25,11 +24,11 @@ export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: 
     let totalBalance = currentSwellL2Balance.plus(currentVaultTokenBalance)
     let [underlyingBalance, _] = await toUnderlyingBalance(ctx, DERIVE_VAULTS[vaultName].derive, totalBalance, currentTimestampMs)
 
-    let lastSnapshot = await ctx.store.get(DeriveVaultUserSnapshot, `${owner}-${vaultTokenAddress}`)
+    let lastSnapshot = await ctx.store.get(schemas.DeriveVaultUserSnapshot, `${owner}-${vaultTokenAddress}`)
 
     if (lastSnapshot) {
         // deep clone to avoid mutation
-        lastSnapshot = new DeriveVaultUserSnapshot({
+        lastSnapshot = new schemas.DeriveVaultUserSnapshot({
             id: lastSnapshot.id,
             owner: lastSnapshot.owner,
             vaultName: lastSnapshot.vaultName,
@@ -40,7 +39,7 @@ export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: 
         })
     }
 
-    let newSnapshot = new DeriveVaultUserSnapshot(
+    let newSnapshot = new schemas.DeriveVaultUserSnapshot(
         {
             id: `${owner}-${vaultTokenAddress}`,
             owner: owner,
@@ -57,7 +56,7 @@ export async function updateDeriveVaultUserSnapshot(ctx: EthContext, vaultName: 
     return [lastSnapshot, newSnapshot]
 }
 
-export function emitUserPointUpdate(ctx: EthContext, vaultConfig: VaultConfig, lastSnapshot: DeriveVaultUserSnapshot | undefined, newSnapshot: DeriveVaultUserSnapshot | undefined) {
+export function emitUserPointUpdate(ctx: EthContext, vaultConfig: vaults.VaultConfig, lastSnapshot: schemas.DeriveVaultUserSnapshot | undefined, newSnapshot: schemas.DeriveVaultUserSnapshot | undefined) {
     if (!lastSnapshot || !newSnapshot) return;
 
     if (lastSnapshot.vaultBalance.isZero()) return;

@@ -9,7 +9,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "gen": "sentio gen"
   },
   "dependencies": {
     "@sentio/sdk": "^2.44.1",

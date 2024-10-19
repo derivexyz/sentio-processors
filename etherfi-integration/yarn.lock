@@ -1321,7 +1321,7 @@
   resolved "https://registry.yarnpkg.com/@sentio/chain/-/chain-2.1.10.tgz#c5ff9c2d6c7cf082635927d85e4e3e8d78e7ca4b"
   integrity sha512-lMsGwdxfYQSHLqwpim85Ok1h6OT9v1aNymu0ihs2V/qtMjY+jwmX5OAAGiXQv/xCCy8u7iW+UT2Rpn7iJBEObQ==
 
-"@sentio/cli@^2.21.2":
+"@sentio/cli@^2.21.4":
   version "2.21.4"
   resolved "https://registry.yarnpkg.com/@sentio/cli/-/cli-2.21.4.tgz#40cd1345f08d995c0524287cf93913cfe1fa91b9"
   integrity sha512-EvIv0BqHxQS8xmyEu0Q/hKZ/CSOUkuXZM8JM8rswVtlRmF7fbDPsi6/KMSsg5Z7JJYeoM0CC+axZW7FfGs0DTA==
@@ -1388,7 +1388,7 @@
   resolved "https://registry.yarnpkg.com/@sentio/runtime/-/runtime-2.44.1.tgz#8129c99007d251f599256a684b5b29913df310ae"
   integrity sha512-6RqYssugdcLs06tx4bZcvHQbzCJOjztMIJwXAXryH5cyqdtFiYzTeJKK41jR2pah1cjsU951bvMb2WjqMEfpVQ==
 
-"@sentio/sdk@^2.43.2":
+"@sentio/sdk@^2.44.1":
   version "2.44.1"
   resolved "https://registry.yarnpkg.com/@sentio/sdk/-/sdk-2.44.1.tgz#238910aa6ca90c2e05a2fcf252207d2760b25368"
   integrity sha512-cZ4avgEZw1G2hvmNmpKnvNlwHjLSua8VYYh3F/kBQYUwhAmb5N4FzERVOgJwtsXzVf5rqlqVuldjs9d6hAzpmg==

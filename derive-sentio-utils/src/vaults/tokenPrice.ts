@@ -1,10 +1,11 @@
 import { EthChainId, EthContext, getProvider } from "@sentio/sdk/eth"
 import { DeriveVaultTokenPrice } from "../schema/store.js"
 import { getDeriveVaultTokenContract } from "../types/eth/derivevaulttoken.js"
-import { MILLISECONDS_PER_DAY } from "../config.js"
-import { estimateBlockNumberAtDate, VaultConfig } from "@derivefinance/derive-sentio-utils"
 import { BigDecimal } from "@sentio/sdk"
 import { getAddress } from "ethers"
+import { MILLISECONDS_PER_DAY } from "../constants.js"
+import { VaultConfig } from "./vaultConfig.js"
+import { estimateBlockNumberAtDate } from "../crosschainBlocks.js"
 
 
 export async function saveCurrentVaultTokenPrice(ctx: EthContext, vaultDetails: VaultConfig) {

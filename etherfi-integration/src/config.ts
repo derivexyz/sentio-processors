@@ -1,4 +1,4 @@
-import { IntegratorSeason, V2AssetConfig, VaultConfig, VaultPoolConfig } from "@derivefinance/derive-sentio-utils";
+import { IntegratorSeason, vaults } from "@derivefinance/derive-sentio-utils";
 import { BigDecimal } from "@sentio/sdk";
 import { EthChainId } from "@sentio/sdk/eth";
 
@@ -27,7 +27,7 @@ export enum VaultName {
 export const ARB_VAULT_PRICE_START_BLOCK = 217000000;
 export const MAINNET_VAULT_PRICE_START_BLOCK = 20000000;
 
-export const DERIVE_VAULTS: Record<VaultName, VaultConfig> = {
+export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
     WEETHC_MAINNET: {
         vaultName: VaultName.WEETHC_MAINNET,
         subaccountId: BigInt(5738),
@@ -121,7 +121,7 @@ export const DERIVE_VAULTS: Record<VaultName, VaultConfig> = {
 }
 
 
-export const VAULT_POOLS: Record<string, VaultPoolConfig> = {
+export const VAULT_POOLS: Record<string, vaults.VaultPoolConfig> = {
     SWELL_L2: {
         chainId: EthChainId.ETHEREUM,
         address: "0x38D43a6Cb8DA0E855A42fB6b0733A0498531d774",
@@ -129,7 +129,7 @@ export const VAULT_POOLS: Record<string, VaultPoolConfig> = {
     }
 }
 
-export const V2_ASSETS: Record<string, V2AssetConfig> = {
+export const V2_ASSETS: Record<string, vaults.V2AssetConfig> = {
     WEETH: {
         assetAndSubId: "0xf30ee744fcfd135a135e6a4e327e01d0f697e6ec000000000000000000000000", // asset: 0xF30EE744fCfd135A135E6a4e327e01d0f697e6Ec
         assetName: "WEETH",

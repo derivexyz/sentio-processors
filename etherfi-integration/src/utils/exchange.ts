@@ -1,11 +1,10 @@
 import axios from "axios"
 import { EthChainId, EthContext, getProvider, isNullAddress } from "@sentio/sdk/eth";
-import { DeriveExchangeUserSnapshot, Subaccount } from "../schema/store.js";
 import { DERIVE_V2_MATCHING_ADDRESS, DERIVE_VAULTS, MILLISECONDS_PER_DAY, PointUpdateEvent, V2_ASSETS } from "../config.js";
-import { isVaultSubaccount, V2AssetConfig } from "@derivefinance/derive-sentio-utils"
 import { getMatchingContract } from "../types/eth/matching.js";
 import { getLightAccountContract } from "../types/eth/lightaccount.js";
 import { BigDecimal } from "@sentio/sdk";
+import { schemas, vaults } from "@derivefinance/derive-sentio-utils";
 
 
 export async function updateExchangeBalance(ctx: EthContext, assetName: keyof typeof V2_ASSETS, subaccountId: bigint, newBalance: BigDecimal) {
@@ -20,12 +19,12 @@ export async function updateExchangeBalance(ctx: EthContext, assetName: keyof ty
 
 
     let lastSubaccountBalance = new BigDecimal(0)
-    const lastSnapshot = await ctx.store.get(DeriveExchangeUserSnapshot, `${subaccountId}-${assetAndSubId}`)
+    const lastSnapshot = await ctx.store.get(schemas.DeriveExchangeUserSnapshot, `${subaccountId}-${assetAndSubId}`)
     if (lastSnapshot) {
         lastSubaccountBalance = lastSnapshot.amount
     }
 
-    const new_snapshot = new DeriveExchangeUserSnapshot({
+    const new_snapshot = new schemas.DeriveExchangeUserSnapshot({
         id: `${subaccountId}-${assetAndSubId}`,
         assetAndSubId: assetAndSubId,
         subaccountId: subaccountId,
@@ -41,7 +40,7 @@ export async function updateExchangeBalance(ctx: EthContext, assetName: keyof ty
 
 
 export async function updateExchangeTimestamp(ctx: EthContext) {
-    const userSnapshots: DeriveExchangeUserSnapshot[] = await ctx.store.list(DeriveExchangeUserSnapshot, []);
+    const userSnapshots: schemas.DeriveExchangeUserSnapshot[] = await ctx.store.list(schemas.DeriveExchangeUserSnapshot, []);
 
     try {
         const promises = [];
@@ -62,7 +61,7 @@ export async function updateExchangeTimestamp(ctx: EthContext) {
 }
 
 
-async function emitUserExchangePoints(ctx: EthContext, v2AssetConfig: V2AssetConfig, eoa: string, lastTimestampMs: bigint | undefined, newTimestampMs: bigint, lastBalance: BigDecimal, newBalance: BigDecimal) {
+async function emitUserExchangePoints(ctx: EthContext, v2AssetConfig: vaults.V2AssetConfig, eoa: string, lastTimestampMs: bigint | undefined, newTimestampMs: bigint, lastBalance: BigDecimal, newBalance: BigDecimal) {
     let elapsedDays = 0
     if (lastTimestampMs) {
         elapsedDays = (Number(newTimestampMs) - Number(lastTimestampMs)) / MILLISECONDS_PER_DAY
@@ -90,7 +89,7 @@ async function emitUserExchangePoints(ctx: EthContext, v2AssetConfig: V2AssetCon
     ctx.eventLogger.emit("point_update", data);
 }
 
-function getUsersToUpdate(allExchangeSnapshots: DeriveExchangeUserSnapshot[]): [string, string, string][] {
+function getUsersToUpdate(allExchangeSnapshots: schemas.DeriveExchangeUserSnapshot[]): [string, string, string][] {
     const usersToUpdate = new Set<[string, string, string]>()
     for (const snapshot of allExchangeSnapshots) {
         usersToUpdate.add([snapshot.eoa, snapshot.assetAndSubId, snapshot.tokenName])
@@ -100,7 +99,7 @@ function getUsersToUpdate(allExchangeSnapshots: DeriveExchangeUserSnapshot[]): [
 }
 
 async function getTotalSubaccountBalances(ctx: EthContext, assetAndSubId: string, eoa: string): Promise<[BigDecimal, bigint | undefined, bigint]> {
-    const allSubaccountSnapshots = await ctx.store.list(DeriveExchangeUserSnapshot, [
+    const allSubaccountSnapshots = await ctx.store.list(schemas.DeriveExchangeUserSnapshot, [
         { field: "eoa", op: "=", value: eoa },
         { field: "assetAndSubId", op: "=", value: assetAndSubId }
     ])
@@ -132,7 +131,7 @@ async function getEOA(ctx: EthContext, subaccountId: bigint): Promise<string | u
         throw new Error("Subaccount id must be greater than 1")
     }
 
-    const subaccount = await ctx.store.get(Subaccount, `${subaccountId}`)
+    const subaccount = await ctx.store.get(schemas.Subaccount, `${subaccountId}`)
     if (!subaccount) {
         const owner = await getSubaccountOwnerFromMatching(ctx, subaccountId)
         const subaccount = await getSubaccountDetails(ctx, owner, subaccountId)
@@ -145,11 +144,11 @@ async function getEOA(ctx: EthContext, subaccountId: bigint): Promise<string | u
 }
 
 // listen on matching event
-async function getSubaccountDetails(ctx: EthContext, owner: string | undefined, subaccountId: bigint): Promise<Subaccount> {
+async function getSubaccountDetails(ctx: EthContext, owner: string | undefined, subaccountId: bigint): Promise<schemas.Subaccount> {
 
     if (owner) {
         const eoa = await getSmartContractOwner(owner)
-        return new Subaccount({
+        return new schemas.Subaccount({
             id: `${subaccountId}`,
             subaccountId: subaccountId,
             eoa: eoa ? eoa : owner,
@@ -157,7 +156,7 @@ async function getSubaccountDetails(ctx: EthContext, owner: string | undefined, 
             smartContractWallet: eoa ? owner : undefined,
         })
     } else { // not in matching contract
-        return new Subaccount({
+        return new schemas.Subaccount({
             id: `${subaccountId}`,
             subaccountId: subaccountId,
             eoa: undefined,
@@ -168,7 +167,7 @@ async function getSubaccountDetails(ctx: EthContext, owner: string | undefined, 
 
 
 async function getSubaccountOwnerFromMatching(ctx: EthContext, subaccountId: bigint): Promise<string | undefined> {
-    if (isVaultSubaccount(subaccountId, Object.values(DERIVE_VAULTS))) {
+    if (vaults.isVaultSubaccount(subaccountId, Object.values(DERIVE_VAULTS))) {
         return undefined
     }
 

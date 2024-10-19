@@ -1,12 +1,12 @@
 import { EthChainId } from '@sentio/sdk/eth'
 import { ERC20Processor } from '@sentio/sdk/eth/builtin'
 import { ARB_VAULT_PRICE_START_BLOCK, DERIVE_V2_DEPOSIT_START_BLOCK, DERIVE_V2_SUBACCOUNTS_ADDRESS, DERIVE_VAULTS, MAINNET_VAULT_PRICE_START_BLOCK, V2_ASSETS, VaultName } from './config.js'
-import { DeriveExchangeUserSnapshot, DeriveVaultUserSnapshot } from './schema/store.js'
 import { updateUserSnapshotAndEmitPointUpdate } from './utils/userSnapshotsAndPoints.js'
-import { saveCurrentVaultTokenPrice } from './utils/vaultTokenPrice.js'
 import { GlobalProcessor } from '@sentio/sdk/eth'
 import { updateExchangeBalance, updateExchangeTimestamp } from './utils/exchange.js'
 import { SubaccountsProcessor } from './types/eth/subaccounts.js'
+import { saveCurrentVaultTokenPrice } from '@derivefinance/derive-sentio-utils/dist/vaults/tokenPrice.js'
+import { schemas } from '@derivefinance/derive-sentio-utils'
 
 /////////////////
 // Methodology //
@@ -39,7 +39,7 @@ ERC20Processor.bind(
     })
     // this time interval handles all three vaults (weETHC, weETHCS, weETHBULL)
     .onTimeInterval(async (_, ctx) => {
-        const userSnapshots: DeriveVaultUserSnapshot[] = await ctx.store.list(DeriveVaultUserSnapshot, []);
+        const userSnapshots: schemas.DeriveVaultUserSnapshot[] = await ctx.store.list(schemas.DeriveVaultUserSnapshot, []);
 
         try {
             const promises = [];
@@ -90,7 +90,7 @@ ERC20Processor.bind(
     })
     // this time interval handles all three vaults (weETHC, weETHCS, weETHBULL)
     .onTimeInterval(async (_, ctx) => {
-        const userSnapshots: DeriveVaultUserSnapshot[] = await ctx.store.list(DeriveVaultUserSnapshot, []);
+        const userSnapshots: schemas.DeriveVaultUserSnapshot[] = await ctx.store.list(schemas.DeriveVaultUserSnapshot, []);
 
         try {
             const promises = [];
