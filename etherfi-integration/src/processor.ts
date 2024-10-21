@@ -1,10 +1,10 @@
 import { EthChainId } from '@sentio/sdk/eth'
 import { ERC20Processor } from '@sentio/sdk/eth/builtin'
-import { ARB_VAULT_PRICE_START_BLOCK, DERIVE_V2_DEPOSIT_START_BLOCK, DERIVE_VAULTS, excludedSubaccounts, MAINNET_VAULT_PRICE_START_BLOCK, V2_ASSETS, VaultName } from './config.js'
-import { updateVaultSnapshotAndEmitPointUpdate } from './utils/vaults.js'
+import { ARB_VAULT_PRICE_START_BLOCK, DERIVE_V2_DEPOSIT_START_BLOCK, DERIVE_VAULTS, excludedSubaccounts, MAINNET_VAULT_PRICE_START_BLOCK, V2_ASSETS, VAULT_POOLS, VaultName } from './config.js'
+import { emitVaultUserPoints } from './utils/vaults.js'
 import { GlobalProcessor } from '@sentio/sdk/eth'
 import { saveCurrentVaultTokenPrice } from '@derivefinance/derive-sentio-utils/dist/vaults/tokenPrice.js'
-import { schemas, v2 } from '@derivefinance/derive-sentio-utils'
+import { pools, schemas, v2, vaults } from '@derivefinance/derive-sentio-utils'
 import { emitUserExchangePoints } from './utils/exchange.js'
 import { DERIVE_V2_SUBACCOUNTS_ADDRESS } from '@derivefinance/derive-sentio-utils/dist/v2/constants.js'
 import { SubaccountsProcessor } from '@derivefinance/derive-sentio-utils/dist/types/eth/subaccounts.js'
@@ -35,7 +35,8 @@ ERC20Processor.bind(
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            await updateVaultSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHC_MAINNET, ctx.address, user)
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.WEETHC_MAINNET, ctx.address, user, [VAULT_POOLS.SWELL_L2.address], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHC_MAINNET, oldSnapshot, newSnapshot)
         }
     })
     // this time interval handles all three vaults (weETHC, weETHCS, weETHBULL)
@@ -46,7 +47,10 @@ ERC20Processor.bind(
             const promises = [];
             for (const snapshot of userSnapshots) {
                 promises.push(
-                    await updateVaultSnapshotAndEmitPointUpdate(ctx, snapshot.vaultName as VaultName, snapshot.vaultAddress, snapshot.owner)
+                    (async () => {
+                        let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], snapshot.vaultAddress, snapshot.owner, [VAULT_POOLS.SWELL_L2.address], pools.swellL2.getSwellL2Balance)
+                        emitVaultUserPoints(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], oldSnapshot, newSnapshot)
+                    })
                 );
             }
             await Promise.all(promises);
@@ -63,7 +67,8 @@ ERC20Processor.bind(
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            await updateVaultSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHCS_MAINNET, ctx.address, user)
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.WEETHCS_MAINNET, ctx.address, user, [VAULT_POOLS.SWELL_L2.address], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHCS_MAINNET, oldSnapshot, newSnapshot)
         }
     })
 
@@ -72,7 +77,8 @@ ERC20Processor.bind(
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            await updateVaultSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHBULL_MAINNET, ctx.address, user)
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.WEETHBULL_MAINNET, ctx.address, user, [VAULT_POOLS.SWELL_L2.address], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHBULL_MAINNET, oldSnapshot, newSnapshot)
         }
     })
 
@@ -86,7 +92,8 @@ ERC20Processor.bind(
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            await updateVaultSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHC_ARB, ctx.address, user)
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.WEETHC_ARB, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHC_ARB, oldSnapshot, newSnapshot)
         }
     })
     // this time interval handles all three vaults (weETHC, weETHCS, weETHBULL)
@@ -97,7 +104,10 @@ ERC20Processor.bind(
             const promises = [];
             for (const snapshot of userSnapshots) {
                 promises.push(
-                    await updateVaultSnapshotAndEmitPointUpdate(ctx, snapshot.vaultName as VaultName, snapshot.vaultAddress, snapshot.owner)
+                    (async () => {
+                        let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)
+                        emitVaultUserPoints(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], oldSnapshot, newSnapshot)
+                    })
                 );
             }
             await Promise.all(promises);
@@ -114,7 +124,8 @@ ERC20Processor.bind(
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            await updateVaultSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHCS_ARB, ctx.address, user)
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.WEETHCS_ARB, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHCS_ARB, oldSnapshot, newSnapshot)
         }
     })
 
@@ -123,7 +134,8 @@ ERC20Processor.bind(
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            await updateVaultSnapshotAndEmitPointUpdate(ctx, VaultName.WEETHBULL_ARB, ctx.address, user)
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.WEETHBULL_ARB, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHBULL_ARB, oldSnapshot, newSnapshot)
         }
     })
 
