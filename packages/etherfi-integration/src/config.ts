@@ -2,9 +2,8 @@ import { IntegratorSeason, vaults } from "@derivefinance/derive-sentio-utils";
 import { BigDecimal } from "@sentio/sdk";
 import { EthChainId } from "@sentio/sdk/eth";
 
-// TODO: still need to figure out how to give exact balances at specific block...
-// TODO: some issue where the points are not accruing at time intervals
-// TODO: points not updating
+// TODO: Fix exact Integrator Season dates
+
 
 export const INTEGRATOR_SEASONS: IntegratorSeason[] = [
     {

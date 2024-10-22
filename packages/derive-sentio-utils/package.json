@@ -11,13 +11,5 @@
   "scripts": {
     "build": "tsc",
     "gen": "sentio gen"
-  },
-  "dependencies": {
-    "@sentio/sdk": "^2.44.1",
-    "axios": "^1.7.4"
-  },
-  "devDependencies": {
-    "@sentio/cli": "^2.21.4",
-    "typescript": "^5.5.2"
   }
 }
