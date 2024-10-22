@@ -1,6 +1,6 @@
 import { EthChainId, EthContext } from '@sentio/sdk/eth'
 import { ERC20Processor } from '@sentio/sdk/eth/builtin'
-import { ARB_VAULT_PRICE_START_BLOCK, DERIVE_V2_DEPOSIT_START_BLOCK, DERIVE_VAULTS, excludedSubaccounts, MAINNET_VAULT_PRICE_START_BLOCK, V2_ASSETS, VAULT_POOLS, VaultName } from './config.js'
+import { ARB_VAULT_PRICE_START_BLOCK, DERIVE_V2_DEPOSIT_START_BLOCK, DERIVE_VAULTS, excludedSubaccounts, MAINNET_VAULT_PRICE_START_BLOCK, V2_ASSETS, VaultName } from './config.js'
 import { emitVaultUserPoints } from './utils/vaults.js'
 import { GlobalProcessor } from '@sentio/sdk/eth'
 import { saveCurrentVaultTokenPrice } from '@derivefinance/derive-sentio-utils/dist/vaults/tokenPrice.js'
@@ -35,7 +35,7 @@ ERC20Processor.bind(
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.RSETHC_MAINNET, ctx.address, user, [VAULT_POOLS.SWELL_L2.address], pools.swellL2.getSwellL2Balance)
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.RSETHC_MAINNET, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
             emitVaultUserPoints(ctx, DERIVE_VAULTS.RSETHC_MAINNET, oldSnapshot, newSnapshot)
         }
     })
@@ -48,7 +48,7 @@ ERC20Processor.bind(
             for (const snapshot of userSnapshots) {
                 promises.push(
                     (async () => {
-                        let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], snapshot.vaultAddress, snapshot.owner, [VAULT_POOLS.SWELL_L2.address], pools.swellL2.getSwellL2Balance)
+                        let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)
                         emitVaultUserPoints(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], oldSnapshot, newSnapshot)
                     })()
                 );

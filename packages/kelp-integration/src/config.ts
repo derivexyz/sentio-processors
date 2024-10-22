@@ -53,8 +53,6 @@ export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
 }
 
 
-export const VAULT_POOLS: Record<string, vaults.VaultPoolConfig> = {}
-
 export enum V2AssetName {
     RSETH = "RSETH",
 }
