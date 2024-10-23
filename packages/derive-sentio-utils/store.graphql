@@ -1,0 +1,35 @@
+type DeriveVaultUserSnapshot @entity {
+    id: ID!
+    owner: String!
+    vaultName: String!
+    vaultAddress: String!
+    timestampMs: BigInt!
+    vaultBalance: BigDecimal!
+    underlyingEffectiveBalance: BigDecimal!
+}
+
+
+type DeriveVaultTokenPrice @entity {
+    id: ID!
+    vaultAddress: String!
+    vaultName: String!
+    timestampMs: BigInt!
+    vaultToUnderlying: BigDecimal!
+}
+
+type DeriveExchangeUserSnapshot @entity {
+    id: ID!
+    assetAndSubId: String!
+    subaccountId: BigInt!
+    tokenName: String!
+    amount: BigDecimal!
+    eoa: String!
+    timestampMs: BigInt!
+}
+
+type Subaccount @entity {
+    id: ID!
+    subaccountId: BigInt!
+    eoa: String
+    smartContractWallet: String
+}
