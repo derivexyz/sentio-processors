@@ -122,9 +122,9 @@ GlobalProcessor.bind(
     60 * 24
 )
 
-//////////////////////////////////////
-// Derive Chain EtherFi Balance Binds //
-//////////////////////////////////////
+/////////////////////////////////////////
+// Derive Chain Exchange Balance Binds //
+////////////////////////////////////////
 
 const ebtc_filter = SubaccountsProcessor.filters.BalanceAdjusted(null, null, V2_ASSETS.RSETH.assetAndSubId, null, null, null, null)
 SubaccountsProcessor.bind(
