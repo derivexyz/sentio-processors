@@ -26,7 +26,7 @@ export async function updateVaultUserSnapshot(ctx: EthContext, vaultConfig: vaul
 
     const vaultTokenContractView = erc20.getERC20ContractOnContext(ctx, vaultTokenAddress)
     let currentTimestampMs = BigInt(ctx.timestamp.getTime())
-    let currentVaultTokenBalance = (await vaultTokenContractView.balanceOf(owner)).scaleDown(18)
+    let currentVaultTokenBalance = (await vaultTokenContractView.balanceOf(owner)).scaleDown(vaultConfig.vaultDecimals)
     let currentSwellL2Balance = await poolBalanceFn(ctx, owner, vaultTokenAddress)
     let totalBalance = currentSwellL2Balance.plus(currentVaultTokenBalance)
     let [underlyingBalance, _] = await toUnderlyingBalance(ctx, vaultConfig.derive, totalBalance, currentTimestampMs)
