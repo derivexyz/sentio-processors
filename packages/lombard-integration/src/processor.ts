@@ -54,8 +54,8 @@ ERC20Processor.bind(
             console.log("onTimeInterval error", e.message, ctx.timestamp);
         }
     },
-        60 * 1,
-        60 * 1 // backfill at 1 hour
+        60 * 24,
+        60 * 24 // backfill at 1 hour
     )
 
 
@@ -83,8 +83,8 @@ for (const params of [
         await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCPS)
         await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCCS)
     },
-        60 * 1,
-        60 * 1
+        60 * 24,
+        60 * 24
     )
 }
 
