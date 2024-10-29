@@ -13,7 +13,7 @@ export const INTEGRATOR_SEASONS: IntegratorSeason[] = [
     {
         name: "season_2",
         seasonEndMs: 1725235200000 // Sep 2nd UTC 00
-    }
+    },
     {
         name: "season_3",
         seasonEndMs: 1742688000000 // March 23rd, 2025
