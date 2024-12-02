@@ -65,7 +65,8 @@ export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
 }
 
 export enum V2AssetName {
-    RSWETH = "SUSDE",
+    SUSDE = "SUSDE",
+    USDE = "USDE",
 }
 
 
@@ -78,6 +79,13 @@ export const V2_ASSETS: Record<V2AssetName, vaults.V2AssetConfig> = {
         assetName: "SUSDE",
         pointMultipliersPerDay: {
             ethena: 5,
+        }
+    },
+    USDE: {
+        assetAndSubId: "0x028b9ffa86fc4c366e11aa8b3e71dc0502713abf000000000000000000000000", // asset: 0x028B9fFA86fc4c366e11AA8b3E71dc0502713ABF
+        assetName: "USDE",
+        pointMultipliersPerDay: {
+            ethena: 20,
         }
     }
 }
