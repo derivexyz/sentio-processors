@@ -13,6 +13,10 @@ export const INTEGRATOR_SEASONS: IntegratorSeason[] = [
     {
         name: "season_2",
         seasonEndMs: 1734393600000
+    },
+    {
+        name: "season_3",
+        seasonEndMs: 1742688000000 // TODO: need to change - currently wrong, see https://app.swellnetwork.io/dao/swell-city
     }
 ]
 
