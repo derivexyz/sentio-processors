@@ -10,6 +10,7 @@
 
 ### Uploading to sentio
 - `npx @sentio/cli login --api-key <api-key>` (create API key in sentio dashboard)
+- `cd <integrator package>`
 - `yarn sentio upload --owner derive`
 
 ## Modifying derive-sentio-utils

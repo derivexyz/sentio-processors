@@ -152,7 +152,7 @@ async function getSubaccountOwnerFromMatching(subaccountId: bigint, excludedSuba
     }
 
     // should be doing an "onContext"?"
-    const matchingContract = getMatchingContract(EthChainId.LYRA, DERIVE_V2_MATCHING_ADDRESS)
+    const matchingContract = getMatchingContract(EthChainId.DERIVE, DERIVE_V2_MATCHING_ADDRESS)
     const owner = await matchingContract.subAccountToOwner(subaccountId)
 
     if (isNullAddress(owner)) {
@@ -164,10 +164,10 @@ async function getSubaccountOwnerFromMatching(subaccountId: bigint, excludedSuba
 
 async function getSmartContractOwner(subaccountOwner: string): Promise<string | undefined> {
 
-    if (await getProvider(EthChainId.LYRA).getCode(subaccountOwner) === "0x") {
+    if (await getProvider(EthChainId.DERIVE).getCode(subaccountOwner) === "0x") {
         return undefined;
     }
 
-    const subaccountOwnerContract = getLightAccountContract(EthChainId.LYRA, subaccountOwner)
+    const subaccountOwnerContract = getLightAccountContract(EthChainId.DERIVE, subaccountOwner)
     return await subaccountOwnerContract.owner()
 }

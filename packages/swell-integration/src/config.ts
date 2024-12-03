@@ -13,6 +13,10 @@ export const INTEGRATOR_SEASONS: IntegratorSeason[] = [
     {
         name: "season_2",
         seasonEndMs: 1734393600000
+    },
+    {
+        name: "season_3",
+        seasonEndMs: 1742688000000 // TODO: need to change - currently wrong, see https://app.swellnetwork.io/dao/swell-city
     }
 ]
 
@@ -28,7 +32,7 @@ export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
         vaultName: VaultName.RSWETHC_MAINNET,
         subaccountId: BigInt(5739),
         destinationChainId: EthChainId.ETHEREUM,
-        deriveChainId: EthChainId.LYRA,
+        deriveChainId: EthChainId.DERIVE,
         destinationChainAddress: "0xE9A12fB15cC00b59867E4E2f0aCbdCebfd32b3d7",
         derive: "0x5bbef94dcee8f087D5146d2815bC4955C76B2794",
         predepositUpgradeTimestampMs: 1720252800000,
