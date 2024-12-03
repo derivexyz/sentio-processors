@@ -128,7 +128,7 @@ GlobalProcessor.bind(
 
 const susde_filter = SubaccountsProcessor.filters.BalanceAdjusted(null, null, V2_ASSETS.SUSDE.assetAndSubId, null, null, null, null)
 SubaccountsProcessor.bind(
-    { address: DERIVE_V2_SUBACCOUNTS_ADDRESS, network: EthChainId.LYRA, startBlock: DERIVE_V2_DEPOSIT_START_BLOCK }
+    { address: DERIVE_V2_SUBACCOUNTS_ADDRESS, network: EthChainId.DERIVE, startBlock: DERIVE_V2_DEPOSIT_START_BLOCK }
 )
     .onEventBalanceAdjusted(async (event, ctx) => {
         await v2.snapshot.updateExchangeBalance(ctx, V2_ASSETS.SUSDE, event.args.accountId, event.args.postBalance.scaleDown(18), excludedSubaccounts, emitUserExchangePoints)
@@ -136,7 +136,7 @@ SubaccountsProcessor.bind(
 
 const usde_filter = SubaccountsProcessor.filters.BalanceAdjusted(null, null, V2_ASSETS.USDE.assetAndSubId, null, null, null, null)
 SubaccountsProcessor.bind(
-    { address: DERIVE_V2_SUBACCOUNTS_ADDRESS, network: EthChainId.LYRA, startBlock: DERIVE_V2_DEPOSIT_START_BLOCK }
+    { address: DERIVE_V2_SUBACCOUNTS_ADDRESS, network: EthChainId.DERIVE, startBlock: DERIVE_V2_DEPOSIT_START_BLOCK }
 )
     .onEventBalanceAdjusted(async (event, ctx) => {
         await v2.snapshot.updateExchangeBalance(ctx, V2_ASSETS.USDE, event.args.accountId, event.args.postBalance.scaleDown(18), excludedSubaccounts, emitUserExchangePoints)
@@ -144,7 +144,7 @@ SubaccountsProcessor.bind(
 
 
 GlobalProcessor.bind(
-    { network: EthChainId.LYRA, startBlock: DERIVE_V2_DEPOSIT_START_BLOCK }
+    { network: EthChainId.DERIVE, startBlock: DERIVE_V2_DEPOSIT_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
     await v2.snapshot.updateExchangeTimestamp(ctx, V2_ASSETS, emitUserExchangePoints)
 },

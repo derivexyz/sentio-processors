@@ -38,7 +38,7 @@ export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
         vaultName: VaultName.SUSDEBULL_MAINNET,
         subaccountId: BigInt(10114),
         destinationChainId: EthChainId.ETHEREUM,
-        deriveChainId: EthChainId.LYRA,
+        deriveChainId: EthChainId.DERIVE,
         destinationChainAddress: "0x1d080C689B930f9dEa69CB3B4Bc6b8c213DFC2ad",
         derive: "0x0b4eD379da8eF4FCF06F697c5782CA7b4c3E505E",
         predepositUpgradeTimestampMs: 1723680000000, // August 15, 2024
@@ -52,7 +52,7 @@ export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
         vaultName: VaultName.SUSDEBULL_ARB,
         subaccountId: BigInt(10114),
         destinationChainId: EthChainId.ARBITRUM,
-        deriveChainId: EthChainId.LYRA,
+        deriveChainId: EthChainId.DERIVE,
         destinationChainAddress: "0x81494d722DDceDbA31ac40F28daFa66b207f232B",
         derive: "0x0b4eD379da8eF4FCF06F697c5782CA7b4c3E505E",
         predepositUpgradeTimestampMs: 1723680000000, // August 15, 2024
