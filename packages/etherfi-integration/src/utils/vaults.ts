@@ -9,7 +9,19 @@ export function emitVaultUserPoints(ctx: EthContext, vaultConfig: vaults.VaultCo
     if (lastSnapshot.vaultBalance.isZero()) return;
 
     const elapsedDays = (Number(newSnapshot.timestampMs) - Number(lastSnapshot.timestampMs)) / MILLISECONDS_PER_DAY
-    const earnedEtherfiPoints = elapsedDays * vaultConfig.pointMultipliersPerDay["etherfi"] * lastSnapshot.underlyingEffectiveBalance.toNumber()
+
+    // NOTE: on December 12 11am AEST, got boost to 4x (40,000) - end is TBD
+    // 1733962000
+
+    let etherfiPointsPerDay;
+    if (ctx.timestamp.getTime() < 1733962000000) { // and another && when end date specified
+        etherfiPointsPerDay = vaultConfig.pointMultipliersPerDay["etherfi"]
+    } else {
+        etherfiPointsPerDay = 40000
+    }
+
+
+    const earnedEtherfiPoints = elapsedDays * etherfiPointsPerDay * lastSnapshot.underlyingEffectiveBalance.toNumber()
     const earnedEigenlayerPoints = elapsedDays * vaultConfig.pointMultipliersPerDay["eigenlayer"] * lastSnapshot.underlyingEffectiveBalance.toNumber()
 
     const data: PointUpdateEvent = {

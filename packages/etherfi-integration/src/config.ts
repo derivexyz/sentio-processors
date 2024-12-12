@@ -9,6 +9,8 @@ export const INTEGRATOR_SEASONS: IntegratorSeason[] = [
     {
         name: "season_1",
         seasonEndMs: undefined // end of each season in UTC ms
+
+        // NOTE: see temp boost in points in vaults.ts
     }
 ]
 
