@@ -1,17 +1,17 @@
 import { EthContext, isNullAddress } from "@sentio/sdk/eth";
-import { TokenPeriodicUpdate } from "../config.js";
+import { TokenConfig, TokenPeriodicUpdate } from "../config.js";
 import { schemas, vaults } from "@derivefinance/derive-sentio-utils";
 import { erc20 } from "@sentio/sdk/eth/builtin";
 import { getAddress } from "ethers";
 
-export async function updateTokenUserSnapshot(ctx: EthContext, vaultConfig: vaults.VaultConfig, tokenAddress: string, owner: string, excludedOwners: string[]): Promise<[schemas.DeruveTokenUserSnapshot?, schemas.DeruveTokenUserSnapshot?]> {
+export async function updateTokenUserSnapshot(ctx: EthContext, tokenConfig: TokenConfig, tokenAddress: string, owner: string, excludedOwners: string[]): Promise<[schemas.DeruveTokenUserSnapshot?, schemas.DeruveTokenUserSnapshot?]> {
     tokenAddress = getAddress(tokenAddress)
 
     if (isNullAddress(owner) || excludedOwners.includes(owner)) return [undefined, undefined];
 
     const vaultTokenContractView = erc20.getERC20ContractOnContext(ctx, tokenAddress)
     let currentTimestampMs = BigInt(ctx.timestamp.getTime())
-    let balance = (await vaultTokenContractView.balanceOf(owner)).scaleDown(vaultConfig.vaultDecimals)
+    let balance = (await vaultTokenContractView.balanceOf(owner)).scaleDown(tokenConfig.decimals)
 
     let lastSnapshot = await ctx.store.get(schemas.DeriveTokenUserSnapshot, `${owner}-${tokenAddress}`)
 
@@ -31,7 +31,7 @@ export async function updateTokenUserSnapshot(ctx: EthContext, vaultConfig: vaul
         {
             id: `${owner}-${tokenAddress}`,
             owner: owner,
-            tokenName: vaultConfig.tokenName,
+            tokenName: tokenConfig.tokenName,
             tokenAddress: tokenAddress,
             timestampMs: currentTimestampMs,
             balance: balance,
@@ -43,23 +43,23 @@ export async function updateTokenUserSnapshot(ctx: EthContext, vaultConfig: vaul
     return [lastSnapshot, newSnapshot]
 }
 
-export function emitVaultUserPoints(ctx: EthContext, vaultConfig: vaults.VaultConfig, lastSnapshot: schemas.DeriveVaultUserSnapshot | undefined, newSnapshot: schemas.DeriveVaultUserSnapshot | undefined) {
+export function emitTokenUpdate(ctx: EthContext, tokenConfig: TokenConfig, lastSnapshot: schemas.DeriveTokenUserSnapshot | undefined, newSnapshot: schemas.DeriveTokenUserSnapshot | undefined) {
     if (!lastSnapshot || !newSnapshot) return;
 
-    if (lastSnapshot.vaultBalance.isZero()) return;
+    if (lastSnapshot.balance.isZero()) return;
 
     const data: TokenPeriodicUpdate = {
         account: lastSnapshot.owner,
-        assetAndSubIdOrVaultAddress: lastSnapshot.vaultAddress,
-        assetName: vaultConfig.vaultName,
+        assetAndSubIdOrVaultAddress: lastSnapshot.tokenAddress,
+        assetName: tokenConfig.tokenName,
 
         // last snapshot
         lastTimestampMs: lastSnapshot.timestampMs,
-        lastBalance: lastSnapshot.vaultBalance,
+        lastBalance: lastSnapshot.balance,
 
         // new snapshot
         newTimestampMs: newSnapshot.timestampMs,
-        newBalance: newSnapshot.vaultBalance,
+        newBalance: newSnapshot.balance,
     }
 
     ctx.eventLogger.emit("token_update", data);

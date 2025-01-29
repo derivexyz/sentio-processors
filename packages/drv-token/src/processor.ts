@@ -1,7 +1,7 @@
 import { EthChainId, EthContext } from '@sentio/sdk/eth'
 import { ERC20Processor } from '@sentio/sdk/eth/builtin'
 import { DERIVE_TOKENS, DERIVE_V2_DEPOSIT_START_BLOCK, excludedSubaccounts, V2_ASSETS, TokenName } from './config.js'
-import { emitVaultUserPoints } from './utils/token.js'
+import { emitTokenUpdate, emitVaultUserPoints, updateTokenUserSnapshot } from './utils/token.js'
 import { GlobalProcessor } from '@sentio/sdk/eth'
 import { pools, schemas, v2, vaults } from '@derivefinance/derive-sentio-utils'
 import { emitUserExchangePoints } from './utils/exchange.js'
@@ -31,8 +31,8 @@ ERC20Processor.bind(
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_TOKENS.STDRV_DERIVE, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
-            emitVaultUserPoints(ctx, DERIVE_TOKENS.STDRV_DERIVE, oldSnapshot, newSnapshot)
+            let [oldSnapshot, newSnapshot] = await updateTokenUserSnapshot(ctx, DERIVE_TOKENS.STDRV_DERIVE, ctx.address, user, [])
+            emitTokenUpdate(ctx, DERIVE_TOKENS.STDRV_DERIVE, oldSnapshot, newSnapshot)
         }
     })
 
@@ -44,8 +44,8 @@ ERC20Processor.bind(
             for (const snapshot of userSnapshots) {
                 promises.push(
                     (async () => {
-                        let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_TOKENS[snapshot.vaultName as TokenName], snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)
-                        emitVaultUserPoints(ctx, DERIVE_TOKENS[snapshot.vaultName as TokenName], oldSnapshot, newSnapshot)
+                        let [oldSnapshot, newSnapshot] = await updateTokenUserSnapshot(ctx, DERIVE_TOKENS[snapshot.vaultName as TokenName], snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)
+                        emitTokenUpdate(ctx, DERIVE_TOKENS[snapshot.vaultName as TokenName], oldSnapshot, newSnapshot)
                     })()
                 );
             }
