@@ -4,7 +4,7 @@ import { schemas, vaults } from "@derivefinance/derive-sentio-utils";
 import { erc20 } from "@sentio/sdk/eth/builtin";
 import { getAddress } from "ethers";
 
-export async function updateTokenUserSnapshot(ctx: EthContext, tokenConfig: TokenConfig, tokenAddress: string, owner: string, excludedOwners: string[]): Promise<[schemas.DeruveTokenUserSnapshot?, schemas.DeruveTokenUserSnapshot?]> {
+export async function updateTokenUserSnapshot(ctx: EthContext, tokenConfig: TokenConfig, tokenAddress: string, owner: string, excludedOwners: string[]): Promise<[schemas.DeriveTokenUserSnapshot?, schemas.DeriveTokenUserSnapshot?]> {
     tokenAddress = getAddress(tokenAddress)
 
     if (isNullAddress(owner) || excludedOwners.includes(owner)) return [undefined, undefined];

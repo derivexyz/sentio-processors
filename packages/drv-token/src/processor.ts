@@ -1,10 +1,9 @@
 import { EthChainId, EthContext } from '@sentio/sdk/eth'
 import { ERC20Processor } from '@sentio/sdk/eth/builtin'
 import { DERIVE_TOKENS, DERIVE_V2_DEPOSIT_START_BLOCK, excludedSubaccounts, V2_ASSETS, TokenName } from './config.js'
-import { emitTokenUpdate, emitVaultUserPoints, updateTokenUserSnapshot } from './utils/token.js'
+import { emitTokenUpdate, updateTokenUserSnapshot } from './utils/token.js'
 import { GlobalProcessor } from '@sentio/sdk/eth'
 import { pools, schemas, v2, vaults } from '@derivefinance/derive-sentio-utils'
-import { emitUserExchangePoints } from './utils/exchange.js'
 /////////////////
 // Methodology //
 /////////////////
@@ -44,14 +43,14 @@ ERC20Processor.bind(
             for (const snapshot of userSnapshots) {
                 promises.push(
                     (async () => {
-                        let [oldSnapshot, newSnapshot] = await updateTokenUserSnapshot(ctx, DERIVE_TOKENS[snapshot.vaultName as TokenName], snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)
+                        let [oldSnapshot, newSnapshot] = await updateTokenUserSnapshot(ctx, DERIVE_TOKENS[snapshot.vaultName as TokenName], snapshot.vaultAddress, snapshot.owner, [])
                         emitTokenUpdate(ctx, DERIVE_TOKENS[snapshot.vaultName as TokenName], oldSnapshot, newSnapshot)
                     })()
                 );
             }
             await Promise.all(promises);
         } catch (e) {
-            console.log("erc20 processor vault error", e.message, e.data);
+            console.log("erc20 processor error", e.message, e.data);
         }
     },
         60 * 24,
