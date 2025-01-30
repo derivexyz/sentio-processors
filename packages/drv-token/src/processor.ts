@@ -28,6 +28,7 @@ import { pools, schemas, v2, vaults } from '@derivefinance/derive-sentio-utils'
 ERC20Processor.bind(
     { address: DERIVE_TOKENS.STDRV_DERIVE.destinationChainAddress, network: EthChainId.DERIVE }
 )
+    // need to change Event
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
             let [oldSnapshot, newSnapshot] = await updateTokenUserSnapshot(ctx, DERIVE_TOKENS.STDRV_DERIVE, ctx.address, user, [])
@@ -35,27 +36,27 @@ ERC20Processor.bind(
         }
     })
 
-    .onTimeInterval(async (_, ctx) => {
-        const userSnapshots: schemas.DeriveVaultUserSnapshot[] = await ctx.store.list(schemas.DeriveVaultUserSnapshot, []);
+// .onTimeInterval(async (_, ctx) => {
+//     const userSnapshots: schemas.DeriveTokenUserSnapshot[] = await ctx.store.list(schemas.DeriveTokenUserSnapshot, []);
 
-        try {
-            const promises = [];
-            for (const snapshot of userSnapshots) {
-                promises.push(
-                    (async () => {
-                        let [oldSnapshot, newSnapshot] = await updateTokenUserSnapshot(ctx, DERIVE_TOKENS[snapshot.vaultName as TokenName], snapshot.vaultAddress, snapshot.owner, [])
-                        emitTokenUpdate(ctx, DERIVE_TOKENS[snapshot.vaultName as TokenName], oldSnapshot, newSnapshot)
-                    })()
-                );
-            }
-            await Promise.all(promises);
-        } catch (e) {
-            console.log("erc20 processor error", e.message, e.data);
-        }
-    },
-        60 * 24,
-        60 * 24 // backfill at 1 day
-    )
+//     try {
+//         const promises = [];
+//         for (const snapshot of userSnapshots) {
+//             promises.push(
+//                 (async () => {
+//                     let [oldSnapshot, newSnapshot] = await updateTokenUserSnapshot(ctx, DERIVE_TOKENS[snapshot.tokenName as TokenName], snapshot.vaultAddress, snapshot.owner, [])
+//                     emitTokenUpdate(ctx, DERIVE_TOKENS[snapshot.tokenName as TokenName], oldSnapshot, newSnapshot)
+//                 })()
+//             );
+//         }
+//         await Promise.all(promises);
+//     } catch (e) {
+//         console.log("erc20 processor error", e.message, e.data);
+//     }
+// },
+//     60 * 1,
+//     60 * 1 // backfill at 1 day
+// )
 
 
 // /////////////////////////////

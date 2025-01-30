@@ -20,7 +20,7 @@
 
 ## Modifying derive-sentio-utils
 
-0. Run `yarn sentio gen` to generate contracts
+0. Run `yarn sentio gen` to generate contracts and schema
 1. Always do `rm -rf dist` and run `yarn build` inside of `derive-sentio-utils` once done with change
 2. reference the repo in your project's `package.json` (see other packages for examples)
 3. Run `yarn build` in the root repo

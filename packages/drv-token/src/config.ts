@@ -4,25 +4,6 @@ import { EthChainId } from "@sentio/sdk/eth";
 
 // TODO: Fix exact Integrator Season dates
 
-// Swell WaveDrops: https://app.swellnetwork.io/dao/swell-city
-export const INTEGRATOR_SEASONS: IntegratorSeason[] = [
-    {
-        name: "season_1",
-        seasonEndMs: 1711929600000 //  Apr 1, 2024
-    },
-    {
-        name: "season_2",
-        seasonEndMs: 1725235200000 // Sep 2nd UTC 00
-    },
-    {
-        name: "season_3",
-        seasonEndMs: 1742688000000 // March 23rd, 2025
-    },
-    {
-        name: "season_4",
-        seasonEndMs: 1834393600000 // 2028
-    }
-]
 
 export enum TokenName {
     STDRV_DERIVE = "STDRV_DERIVE",
@@ -44,8 +25,8 @@ export const DERIVE_TOKENS: Record<TokenName, TokenConfig> = {
     STDRV_DERIVE: {
         tokenName: TokenName.STDRV_DERIVE,
         destinationChainId: EthChainId.DERIVE,
-        destinationChainAddress: "0xc3d960B2D0A1d23b1d2073293fc80625d7Fa1fbc",
-        deriveChainAddress: "0xc3d960B2D0A1d23b1d2073293fc80625d7Fa1fbc",
+        destinationChainAddress: "0x7499d654422023a407d92e1D83D387d81BC68De1",
+        deriveChainAddress: "0x7499d654422023a407d92e1D83D387d81BC68De1",
         startBlock: DERIVE_CHAIN_STDRV_START_BLOCK,
         decimals: 18,
     }

@@ -48,6 +48,8 @@ export function emitTokenUpdate(ctx: EthContext, tokenConfig: TokenConfig, lastS
 
     if (lastSnapshot.balance.isZero()) return;
 
+    if (lastSnapshot.balance === newSnapshot.balance) return;
+
     const data: TokenPeriodicUpdate = {
         account: lastSnapshot.owner,
         assetAndSubIdOrVaultAddress: lastSnapshot.tokenAddress,

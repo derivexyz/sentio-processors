@@ -1,5 +1,5 @@
 import { EthChainId, EthContext, getProvider, isNullAddress } from "@sentio/sdk/eth";
-import { INTEGRATOR_SEASONS, TokenPeriodicUpdate, V2_ASSETS } from "../config.js";
+import { TokenPeriodicUpdate, V2_ASSETS } from "../config.js";
 import { BigDecimal } from "@sentio/sdk";
 import { getCurrentSeason, schemas, v2, vaults } from "@derivefinance/derive-sentio-utils";
 import { MILLISECONDS_PER_DAY } from "@derivefinance/derive-sentio-utils/dist/constants.js";
