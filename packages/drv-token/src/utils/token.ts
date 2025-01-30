@@ -46,6 +46,11 @@ export async function updateTokenUserSnapshot(ctx: EthContext, tokenConfig: Toke
 
 export function emitTokenUpdate(ctx: EthContext, tokenConfig: TokenConfig, lastSnapshot: schemas.DeriveTokenUserSnapshot | undefined, newSnapshot: schemas.DeriveTokenUserSnapshot) {
     let data: TokenPeriodicUpdate;
+
+    // usually if first time minted, the sender will be null address and snapshot will be null
+    if (!newSnapshot) return;
+
+    // usually if first time minted, the receiver will not have last snapshot
     if (!lastSnapshot) {
         data = {
             account: newSnapshot.owner,
