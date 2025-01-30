@@ -3,6 +3,7 @@ import { TokenConfig, TokenPeriodicUpdate } from "../config.js";
 import { schemas, vaults } from "@derivefinance/derive-sentio-utils";
 import { erc20 } from "@sentio/sdk/eth/builtin";
 import { getAddress } from "ethers";
+import { BigDecimal } from "@sentio/sdk";
 
 export async function updateTokenUserSnapshot(ctx: EthContext, tokenConfig: TokenConfig, tokenAddress: string, owner: string, excludedOwners: string[]): Promise<[schemas.DeriveTokenUserSnapshot?, schemas.DeriveTokenUserSnapshot?]> {
     tokenAddress = getAddress(tokenAddress)
@@ -43,26 +44,41 @@ export async function updateTokenUserSnapshot(ctx: EthContext, tokenConfig: Toke
     return [lastSnapshot, newSnapshot]
 }
 
-export function emitTokenUpdate(ctx: EthContext, tokenConfig: TokenConfig, lastSnapshot: schemas.DeriveTokenUserSnapshot | undefined, newSnapshot: schemas.DeriveTokenUserSnapshot | undefined) {
-    if (!lastSnapshot || !newSnapshot) return;
+export function emitTokenUpdate(ctx: EthContext, tokenConfig: TokenConfig, lastSnapshot: schemas.DeriveTokenUserSnapshot | undefined, newSnapshot: schemas.DeriveTokenUserSnapshot) {
+    let data: TokenPeriodicUpdate;
+    if (!lastSnapshot) {
+        data = {
+            account: newSnapshot.owner,
+            assetAndSubIdOrVaultAddress: newSnapshot.tokenAddress,
+            assetName: tokenConfig.tokenName,
 
-    if (lastSnapshot.balance.isZero()) return;
+            // last snapshot
+            lastTimestampMs: BigInt(0),
+            lastBalance: BigDecimal(0),
 
-    if (lastSnapshot.balance === newSnapshot.balance) return;
+            // new snapshot
+            newTimestampMs: newSnapshot.timestampMs,
+            newBalance: newSnapshot.balance,
+        }
+    } else {
+        if (lastSnapshot.balance === newSnapshot.balance) return;
 
-    const data: TokenPeriodicUpdate = {
-        account: lastSnapshot.owner,
-        assetAndSubIdOrVaultAddress: lastSnapshot.tokenAddress,
-        assetName: tokenConfig.tokenName,
+        data = {
+            account: lastSnapshot.owner,
+            assetAndSubIdOrVaultAddress: lastSnapshot.tokenAddress,
+            assetName: tokenConfig.tokenName,
 
-        // last snapshot
-        lastTimestampMs: lastSnapshot.timestampMs,
-        lastBalance: lastSnapshot.balance,
+            // last snapshot
+            lastTimestampMs: lastSnapshot.timestampMs,
+            lastBalance: lastSnapshot.balance,
 
-        // new snapshot
-        newTimestampMs: newSnapshot.timestampMs,
-        newBalance: newSnapshot.balance,
+            // new snapshot
+            newTimestampMs: newSnapshot.timestampMs,
+            newBalance: newSnapshot.balance,
+        }
+
     }
-
     ctx.eventLogger.emit("token_update", data);
+
+
 }
