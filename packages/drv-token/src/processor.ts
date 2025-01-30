@@ -32,7 +32,7 @@ ERC20Processor.bind(
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
             let [oldSnapshot, newSnapshot] = await updateTokenUserSnapshot(ctx, DERIVE_TOKENS.STDRV_DERIVE, ctx.address, user, [])
-            emitTokenUpdate(ctx, DERIVE_TOKENS.STDRV_DERIVE, oldSnapshot, newSnapshot as schemas.DeriveTokenUserSnapshot)
+            emitTokenUpdate(ctx, DERIVE_TOKENS.STDRV_DERIVE, oldSnapshot, newSnapshot)
         }
     })
 
