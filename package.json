@@ -6,11 +6,11 @@
         "packages/*"
     ],
     "dependencies": {
-        "@sentio/sdk": "2.50.0",
+        "@sentio/sdk": "2.57.8",
         "axios": "^1.7.4"
     },
     "devDependencies": {
-        "@sentio/cli": "2.23.0",
+        "@sentio/cli": "2.25.3",
         "typescript": "^5.5.2"
     }
 }
