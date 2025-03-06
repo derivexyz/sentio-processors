@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "swell-integration",
+  "name": "drv-token",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -11,6 +11,6 @@
     "postinstall": "sentio gen"
   },
   "dependencies": {
-    "@derivefinance/derive-sentio-utils": "1.0.20"
+    "@derivefinance/derive-sentio-utils": "^1.0.20"
   }
 }

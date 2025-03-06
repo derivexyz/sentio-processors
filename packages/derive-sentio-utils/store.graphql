@@ -33,3 +33,12 @@ type Subaccount @entity {
     eoa: String
     smartContractWallet: String
 }
+
+type DeriveTokenUserSnapshot @entity {
+    id: ID!
+    owner: String!
+    tokenName: String!
+    tokenAddress: String!
+    timestampMs: BigInt!
+    balance: BigDecimal!
+}

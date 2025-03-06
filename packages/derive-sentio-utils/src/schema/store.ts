@@ -122,6 +122,35 @@ export class Subaccount extends AbstractEntity  {
   constructor(data: Partial<Subaccount>) {super()}
 }
 
+@Entity("DeriveTokenUserSnapshot")
+export class DeriveTokenUserSnapshot extends AbstractEntity  {
+
+	@Required
+	@Column("ID")
+	id: ID
+
+	@Required
+	@Column("String")
+	owner: String
+
+	@Required
+	@Column("String")
+	tokenName: String
+
+	@Required
+	@Column("String")
+	tokenAddress: String
+
+	@Required
+	@Column("BigInt")
+	timestampMs: BigInt
+
+	@Required
+	@Column("BigDecimal")
+	balance: BigDecimal
+  constructor(data: Partial<DeriveTokenUserSnapshot>) {super()}
+}
+
 
 const source = `type DeriveVaultUserSnapshot @entity {
     id: ID!
@@ -157,6 +186,15 @@ type Subaccount @entity {
     subaccountId: BigInt!
     eoa: String
     smartContractWallet: String
+}
+
+type DeriveTokenUserSnapshot @entity {
+    id: ID!
+    owner: String!
+    tokenName: String!
+    tokenAddress: String!
+    timestampMs: BigInt!
+    balance: BigDecimal!
 }`
 DatabaseSchema.register({
   source,
@@ -164,6 +202,7 @@ DatabaseSchema.register({
     "DeriveVaultUserSnapshot": DeriveVaultUserSnapshot,
 		"DeriveVaultTokenPrice": DeriveVaultTokenPrice,
 		"DeriveExchangeUserSnapshot": DeriveExchangeUserSnapshot,
-		"Subaccount": Subaccount
+		"Subaccount": Subaccount,
+		"DeriveTokenUserSnapshot": DeriveTokenUserSnapshot
   }
 })

@@ -1,3 +1,8 @@
+### Initial setup
+1. in ROOT run `yarn install`
+2. cd in to packages/derive-sentio-utils and call `yarn sentio gen` and `yarn build`
+3. go back to ROOT and run `yarn sentio build`
+
 ### New Integrations
 1. Copy paste existing integration
 2. cd into new project
@@ -8,14 +13,15 @@
 7. modify `config.ts, processor.js, /utils`
 
 
-### Uploading to sentio
+### Uploading new version of project to sentio
 - `npx @sentio/cli login --api-key <api-key>` (create API key in sentio dashboard)
 - `cd <integrator package>`
 - `yarn sentio upload --owner derive`
 
 ## Modifying derive-sentio-utils
 
-1. Always run `yarn build` inside of `derive-sentio-utils` once done with change
+0. Run `yarn sentio gen` to generate contracts and schema
+1. Always do `rm -rf dist` and run `yarn build` inside of `derive-sentio-utils` once done with change
 2. reference the repo in your project's `package.json` (see other packages for examples)
 3. Run `yarn build` in the root repo
 

@@ -11,6 +11,6 @@
     "postinstall": "sentio gen"
   },
   "dependencies": {
-    "@derivefinance/derive-sentio-utils": "1.0.19"
+    "@derivefinance/derive-sentio-utils": "1.0.20"
   }
 }
