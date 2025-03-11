@@ -27,6 +27,9 @@ export const SEASONS: IntegratorSeason[] = [
 
 export const MAINNET_VAULT_PRICE_START_BLOCK = 20670000; // Start calculating from September 3rd
 
+export const BASE_VAULT_PRICE_START_BLOCK = 27462000; // Start calculating from Mar 11th
+
+
 export const DERIVE_VAULTS: Record<string, VaultConfig> = {
     LBTCPS: {
         vaultName: "LBTCPS",
@@ -39,7 +42,7 @@ export const DERIVE_VAULTS: Record<string, VaultConfig> = {
         vaultDecimals: 8,
         underlyingDecimals: 8,
         pointMultipliersPerDay: {
-            "lombard": 2000,
+            "lombard": 2000, // 2x * 1000 points per day
             "babylon": 100
         }
     },
@@ -50,6 +53,36 @@ export const DERIVE_VAULTS: Record<string, VaultConfig> = {
         deriveChainId: EthChainId.DERIVE,
         destinationChainAddress: "0x5a27765DbE2476240B1265A305c2e3554fD3f341",
         derive: "0xbCab1f8BbA323BC55EA8cfaC34edAcf8DBE92dD4",
+        predepositUpgradeTimestampMs: undefined,
+        vaultDecimals: 8,
+        underlyingDecimals: 8,
+        pointMultipliersPerDay: {
+            "lombard": 2000, // 2x * 1000 points per day
+            "babylon": 100
+        }
+    },
+    LBTCB_MAINNET: {
+        vaultName: "LBTCB_MAINNET",
+        subaccountId: BigInt(47975),
+        destinationChainId: EthChainId.ETHEREUM,
+        deriveChainId: EthChainId.DERIVE,
+        destinationChainAddress: "0xD5E977760EbD45D022500a0561741322dA5b04Da",
+        derive: "0x2104654d6Da663961a86AC3Cf1751981C5dc62E8",
+        predepositUpgradeTimestampMs: undefined,
+        vaultDecimals: 8,
+        underlyingDecimals: 8,
+        pointMultipliersPerDay: {
+            "lombard": 2000, // 2x * 1000 points per day
+            "babylon": 100
+        }
+    },
+    LBTCB_BASE: {
+        vaultName: "LBTCB_BASE",
+        subaccountId: BigInt(47975),
+        destinationChainId: EthChainId.BASE,
+        deriveChainId: EthChainId.DERIVE,
+        destinationChainAddress: "0xe4f79D7e8Bf3639EFb0c63a38A5ffF7942377986",
+        derive: "0x2104654d6Da663961a86AC3Cf1751981C5dc62E8",
         predepositUpgradeTimestampMs: undefined,
         vaultDecimals: 8,
         underlyingDecimals: 8,

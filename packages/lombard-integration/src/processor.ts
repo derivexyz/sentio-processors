@@ -1,6 +1,6 @@
 import { EthChainId } from '@sentio/sdk/eth'
 import { ERC20Processor } from '@sentio/sdk/eth/builtin'
-import { DERIVE_V2_DEPOSIT_START_BLOCK, DERIVE_VAULTS, excludedSubaccounts, MAINNET_VAULT_PRICE_START_BLOCK, V2_ASSETS } from './config.js'
+import { BASE_VAULT_PRICE_START_BLOCK, DERIVE_V2_DEPOSIT_START_BLOCK, DERIVE_VAULTS, excludedSubaccounts, MAINNET_VAULT_PRICE_START_BLOCK, V2_ASSETS } from './config.js'
 import { GlobalProcessor } from '@sentio/sdk/eth'
 import { pools, schemas, v2, vaults } from '@derivefinance/derive-sentio-utils'
 import { emitVaultUserPoints } from './utils/vaults.js'
@@ -35,7 +35,7 @@ ERC20Processor.bind(
             emitVaultUserPoints(ctx, DERIVE_VAULTS.LBTCPS, oldSnapshot, newSnapshot)
         }
     })
-    // this time interval handles all three vaults (weETHC, weETHCS, weETHBULL)
+    // this time interval handles all vaults on mainnet
     .onTimeInterval(async (_, ctx) => {
         const userSnapshots: schemas.DeriveVaultUserSnapshot[] = await ctx.store.list(schemas.DeriveVaultUserSnapshot, []);
 
@@ -68,6 +68,49 @@ ERC20Processor.bind({ address: DERIVE_VAULTS.LBTCCS.destinationChainAddress, net
         }
     })
 
+ERC20Processor.bind({ address: DERIVE_VAULTS.LBTCB_MAINNET.destinationChainAddress, network: DERIVE_VAULTS.LBTCB_MAINNET.destinationChainId })
+    .onEventTransfer(async (event, ctx) => {
+        for (const user of [event.args.from, event.args.to]) {
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.LBTCB_MAINNET, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.LBTCB_MAINNET, oldSnapshot, newSnapshot)
+        }
+    })
+
+////////////////
+// Base Binds //
+////////////////
+
+
+ERC20Processor.bind({ address: DERIVE_VAULTS.LBTCB_BASE.destinationChainAddress, network: DERIVE_VAULTS.LBTCB_BASE.destinationChainId })
+    .onEventTransfer(async (event, ctx) => {
+        for (const user of [event.args.from, event.args.to]) {
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.LBTCB_BASE, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.LBTCB_BASE, oldSnapshot, newSnapshot)
+        }
+    })
+    // this time interval handles all vaults on base
+    .onTimeInterval(async (_, ctx) => {
+        const userSnapshots: schemas.DeriveVaultUserSnapshot[] = await ctx.store.list(schemas.DeriveVaultUserSnapshot, []);
+
+        try {
+            const promises = [];
+            for (const snapshot of userSnapshots) {
+                promises.push(
+                    (async () => {
+                        let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS[snapshot.vaultName], snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)
+                        emitVaultUserPoints(ctx, DERIVE_VAULTS[snapshot.vaultName], oldSnapshot, newSnapshot)
+                    })()
+                );
+            }
+            await Promise.all(promises);
+        } catch (e) {
+            console.log("onTimeInterval error", e.message, ctx.timestamp);
+        }
+    },
+        60 * 24,
+        60 * 24 // backfill at 1 hour
+    )
+
 
 //////////////////////////////////////////
 // Derive Chain Vault Token Price Binds //
@@ -82,6 +125,21 @@ for (const params of [
     ).onTimeInterval(async (_, ctx) => {
         await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCPS)
         await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCCS)
+        await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCB_MAINNET)
+    },
+        60 * 24,
+        60 * 24
+    )
+}
+
+for (const params of [
+    { network: EthChainId.BASE, startBlock: BASE_VAULT_PRICE_START_BLOCK },
+]) {
+
+    GlobalProcessor.bind(
+        params
+    ).onTimeInterval(async (_, ctx) => {
+        await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCB_BASE)
     },
         60 * 24,
         60 * 24
