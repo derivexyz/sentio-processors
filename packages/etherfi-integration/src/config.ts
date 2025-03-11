@@ -20,11 +20,15 @@ export enum VaultName {
     WEETHCS_MAINNET = "WEETHCS_MAINNET",
     WEETHCS_ARB = "WEETHCS_ARB",
     WEETHBULL_MAINNET = "WEETHBULL_MAINNET",
-    WEETHBULL_ARB = "WEETHBULL_ARB"
+    WEETHBULL_ARB = "WEETHBULL_ARB",
+    WEETHB_MAINNET = "WEETHB_MAINNET",
+    WEETHB_ARB = "WEETHB_ARB",
+    WEETHB_BASE = "WEETHB_BASE",
 }
 
 export const ARB_VAULT_PRICE_START_BLOCK = 217000000;
 export const MAINNET_VAULT_PRICE_START_BLOCK = 20000000;
+export const BASE_VAULT_PRICE_START_BLOCK = 27462000; // Start calculating from Mar 11th
 
 export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
     WEETHC_MAINNET: {
@@ -109,6 +113,51 @@ export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
         deriveChainId: EthChainId.DERIVE,
         destinationChainAddress: "0xC7EE36E027272F11135792FaDE64D9365Cc583B5",
         derive: "0xe48cdbe3A233Ea577c9ee6959801e7730e516d1A",
+        predepositUpgradeTimestampMs: undefined,
+        vaultDecimals: 18,
+        underlyingDecimals: 18,
+        pointMultipliersPerDay: {
+            "etherfi": 20000,
+            "eigenlayer": 21,
+        }
+    },
+    WEETHB_MAINNET: {
+        vaultName: VaultName.WEETHB_MAINNET,
+        subaccountId: BigInt(47974),
+        destinationChainId: EthChainId.ETHEREUM,
+        deriveChainId: EthChainId.DERIVE,
+        destinationChainAddress: "0x91f3cf61984cc6beB67c24f4A0b75D56CEeF16aB",
+        derive: "0x513Dc0e3407CA3A6E073A2f2d43fd61498db5739",
+        predepositUpgradeTimestampMs: undefined,
+        vaultDecimals: 18,
+        underlyingDecimals: 18,
+        pointMultipliersPerDay: {
+            "etherfi": 20000,
+            "eigenlayer": 21,
+        }
+    },
+    WEETHB_ARB: {
+        vaultName: VaultName.WEETHB_ARB,
+        subaccountId: BigInt(47974),
+        destinationChainId: EthChainId.ARBITRUM,
+        deriveChainId: EthChainId.DERIVE,
+        destinationChainAddress: "0xeB8d770ec18DB98Db922E9D83260A585b9F0DeAD",
+        derive: "0x513Dc0e3407CA3A6E073A2f2d43fd61498db5739",
+        predepositUpgradeTimestampMs: undefined,
+        vaultDecimals: 18,
+        underlyingDecimals: 18,
+        pointMultipliersPerDay: {
+            "etherfi": 20000,
+            "eigenlayer": 21,
+        }
+    },
+    WEETHB_BASE: {
+        vaultName: VaultName.WEETHB_BASE,
+        subaccountId: BigInt(47974),
+        destinationChainId: EthChainId.BASE,
+        deriveChainId: EthChainId.DERIVE,
+        destinationChainAddress: "0x3F609a42224b83B720f8593F5d40eAa066ef70dE",
+        derive: "0x513Dc0e3407CA3A6E073A2f2d43fd61498db5739",
         predepositUpgradeTimestampMs: undefined,
         vaultDecimals: 18,
         underlyingDecimals: 18,

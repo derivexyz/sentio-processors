@@ -1,6 +1,6 @@
 import { EthChainId } from '@sentio/sdk/eth'
 import { ERC20Processor } from '@sentio/sdk/eth/builtin'
-import { ARB_VAULT_PRICE_START_BLOCK, DERIVE_V2_DEPOSIT_START_BLOCK, DERIVE_VAULTS, excludedSubaccounts, MAINNET_VAULT_PRICE_START_BLOCK, V2_ASSETS, VAULT_POOLS, VaultName } from './config.js'
+import { ARB_VAULT_PRICE_START_BLOCK, BASE_VAULT_PRICE_START_BLOCK, DERIVE_V2_DEPOSIT_START_BLOCK, DERIVE_VAULTS, excludedSubaccounts, MAINNET_VAULT_PRICE_START_BLOCK, V2_ASSETS, VAULT_POOLS, VaultName } from './config.js'
 import { emitVaultUserPoints } from './utils/vaults.js'
 import { GlobalProcessor } from '@sentio/sdk/eth'
 import { saveCurrentVaultTokenPrice } from '@derivefinance/derive-sentio-utils/dist/vaults/tokenPrice.js'
@@ -39,7 +39,7 @@ ERC20Processor.bind(
             emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHC_MAINNET, oldSnapshot, newSnapshot)
         }
     })
-    // this time interval handles all three vaults (weETHC, weETHCS, weETHBULL)
+    // this time interval handles all vaults on mainnet
     .onTimeInterval(async (_, ctx) => {
         const userSnapshots: schemas.DeriveVaultUserSnapshot[] = await ctx.store.list(schemas.DeriveVaultUserSnapshot, []);
 
@@ -82,6 +82,16 @@ ERC20Processor.bind(
         }
     })
 
+ERC20Processor.bind(
+    { address: DERIVE_VAULTS.WEETHB_MAINNET.destinationChainAddress, network: EthChainId.ETHEREUM }
+)
+    .onEventTransfer(async (event, ctx) => {
+        for (const user of [event.args.from, event.args.to]) {
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.WEETHB_MAINNET, ctx.address, user, [VAULT_POOLS.SWELL_L2.address], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHB_MAINNET, oldSnapshot, newSnapshot)
+        }
+    })
+
 
 ////////////////////
 // Arbitrum Binds //
@@ -96,7 +106,7 @@ ERC20Processor.bind(
             emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHC_ARB, oldSnapshot, newSnapshot)
         }
     })
-    // this time interval handles all three vaults (weETHC, weETHCS, weETHBULL)
+    // this time interval handles all vaults on arbitrum
     .onTimeInterval(async (_, ctx) => {
         const userSnapshots: schemas.DeriveVaultUserSnapshot[] = await ctx.store.list(schemas.DeriveVaultUserSnapshot, []);
 
@@ -139,6 +149,52 @@ ERC20Processor.bind(
         }
     })
 
+ERC20Processor.bind(
+    { address: DERIVE_VAULTS.WEETHB_ARB.destinationChainAddress, network: EthChainId.ARBITRUM }
+)
+    .onEventTransfer(async (event, ctx) => {
+        for (const user of [event.args.from, event.args.to]) {
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.WEETHB_ARB, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHB_ARB, oldSnapshot, newSnapshot)
+        }
+    })
+
+////////////////////
+// Base Binds //
+////////////////////
+
+ERC20Processor.bind(
+    { address: DERIVE_VAULTS.WEETHB_BASE.destinationChainAddress, network: EthChainId.BASE }
+)
+    .onEventTransfer(async (event, ctx) => {
+        for (const user of [event.args.from, event.args.to]) {
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.WEETHB_BASE, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHB_BASE, oldSnapshot, newSnapshot)
+        }
+    })
+    // this time interval handles all vaults on base
+    .onTimeInterval(async (_, ctx) => {
+        const userSnapshots: schemas.DeriveVaultUserSnapshot[] = await ctx.store.list(schemas.DeriveVaultUserSnapshot, []);
+
+        try {
+            const promises = [];
+            for (const snapshot of userSnapshots) {
+                promises.push(
+                    (async () => {
+                        let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)
+                        emitVaultUserPoints(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], oldSnapshot, newSnapshot)
+                    })()
+                );
+            }
+            await Promise.all(promises);
+        } catch (e) {
+            console.log("erc20 processor vault error", e.message, e.data);
+        }
+    },
+        60 * 24,
+        60 * 24 // backfill at 1 day
+    )
+
 
 /////////////////////////////
 // Vault Token Price Binds //
@@ -150,6 +206,7 @@ GlobalProcessor.bind(
     await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHC_MAINNET)
     await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHCS_MAINNET)
     await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHBULL_MAINNET)
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHB_MAINNET)
 },
     60 * 24,
     60 * 24
@@ -161,11 +218,20 @@ GlobalProcessor.bind(
     await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHC_ARB)
     await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHCS_ARB)
     await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHBULL_ARB)
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHB_ARB)
 },
     60 * 24,
     60 * 24
 )
 
+GlobalProcessor.bind(
+    { network: EthChainId.BASE, startBlock: BASE_VAULT_PRICE_START_BLOCK }
+).onTimeInterval(async (_, ctx) => {
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHB_BASE)
+},
+    60 * 24,
+    60 * 24
+)
 //////////////////////////////////////
 // Derive Chain EtherFi Balance Binds //
 //////////////////////////////////////
