@@ -30,6 +30,10 @@ export const ARB_VAULT_PRICE_START_BLOCK = 217000000;
 export const MAINNET_VAULT_PRICE_START_BLOCK = 20000000;
 export const BASE_VAULT_PRICE_START_BLOCK = 27462000; // Start calculating from Mar 11th
 
+export const MAINNET_BASIS_VAULT_EXCHANGE_START_BLOCK = 22020000;
+export const BASE_BASIS_VAULT_EXCHANGE_START_BLOCK = 27462000;
+export const ARB_BASIS_VAULT_EXCHANGE_START_BLOCK = 314500000;
+
 export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
     WEETHC_MAINNET: {
         vaultName: VaultName.WEETHC_MAINNET,
@@ -181,6 +185,8 @@ export const V2_ASSETS: Record<string, vaults.V2AssetConfig> = {
     WEETH: {
         assetAndSubId: "0xf30ee744fcfd135a135e6a4e327e01d0f697e6ec000000000000000000000000", // asset: 0xF30EE744fCfd135A135E6a4e327e01d0f697e6Ec
         assetName: "WEETH",
+        assetAddress: "0xF30EE744fCfd135A135E6a4e327e01d0f697e6Ec",
+        subId: BigInt(0),
         pointMultipliersPerDay: {
             etherfi: 20000,
             eigenlayer: 21,
@@ -191,6 +197,8 @@ export const V2_ASSETS: Record<string, vaults.V2AssetConfig> = {
     EBTC: {
         assetAndSubId: "0x95fe344a0f420a7ac1b1e69cb1474179a40db882000000000000000000000000", // asset: 0x95FE344A0f420A7aC1B1E69CB1474179a40db882
         assetName: "EBTC",
+        assetAddress: "0x95FE344A0f420A7aC1B1E69CB1474179a40db882",
+        subId: BigInt(0),
         pointMultipliersPerDay: {
             etherfi: 20000,
             eigenlayer: 21,
