@@ -21,9 +21,9 @@ export enum VaultName {
     WEETHCS_ARB = "WEETHCS_ARB",
     WEETHBULL_MAINNET = "WEETHBULL_MAINNET",
     WEETHBULL_ARB = "WEETHBULL_ARB",
-    WEETHB_MAINNET = "WEETHB_MAINNET",
-    WEETHB_ARB = "WEETHB_ARB",
-    WEETHB_BASE = "WEETHB_BASE",
+    BWEETH_MAINNET = "BWEETH_MAINNET",
+    BWEETH_ARB = "BWEETH_ARB",
+    BWEETH_BASE = "BWEETH_BASE",
 }
 
 export const ARB_VAULT_PRICE_START_BLOCK = 217000000;
@@ -125,12 +125,12 @@ export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
             "eigenlayer": 21,
         }
     },
-    WEETHB_MAINNET: {
-        vaultName: VaultName.WEETHB_MAINNET,
+    BWEETH_MAINNET: {
+        vaultName: VaultName.BWEETH_MAINNET,
         subaccountId: BigInt(47974),
         destinationChainId: EthChainId.ETHEREUM,
         deriveChainId: EthChainId.DERIVE,
-        destinationChainAddress: "0x91f3cf61984cc6beB67c24f4A0b75D56CEeF16aB",
+        destinationChainAddress: "0x32390aD170c9604fa97A894C353a4511C0D4b4C2",
         derive: "0x513Dc0e3407CA3A6E073A2f2d43fd61498db5739",
         predepositUpgradeTimestampMs: undefined,
         vaultDecimals: 18,
@@ -140,12 +140,12 @@ export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
             "eigenlayer": 21,
         }
     },
-    WEETHB_ARB: {
-        vaultName: VaultName.WEETHB_ARB,
+    BWEETH_ARB: {
+        vaultName: VaultName.BWEETH_ARB,
         subaccountId: BigInt(47974),
         destinationChainId: EthChainId.ARBITRUM,
         deriveChainId: EthChainId.DERIVE,
-        destinationChainAddress: "0xeB8d770ec18DB98Db922E9D83260A585b9F0DeAD",
+        destinationChainAddress: "0x254691C06Da387c1050C726cF498eFdA89083820",
         derive: "0x513Dc0e3407CA3A6E073A2f2d43fd61498db5739",
         predepositUpgradeTimestampMs: undefined,
         vaultDecimals: 18,
@@ -155,12 +155,12 @@ export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
             "eigenlayer": 21,
         }
     },
-    WEETHB_BASE: {
-        vaultName: VaultName.WEETHB_BASE,
+    BWEETH_BASE: {
+        vaultName: VaultName.BWEETH_BASE,
         subaccountId: BigInt(47974),
         destinationChainId: EthChainId.BASE,
         deriveChainId: EthChainId.DERIVE,
-        destinationChainAddress: "0x3F609a42224b83B720f8593F5d40eAa066ef70dE",
+        destinationChainAddress: "0xA0B0b5ff5A45D054E2517CB1903C1713E199Fc55",
         derive: "0x513Dc0e3407CA3A6E073A2f2d43fd61498db5739",
         predepositUpgradeTimestampMs: undefined,
         vaultDecimals: 18,

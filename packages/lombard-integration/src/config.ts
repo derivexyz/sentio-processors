@@ -54,33 +54,33 @@ export const DERIVE_VAULTS: Record<string, VaultConfig> = {
             "babylon": 100
         }
     },
-    LBTCB_MAINNET: {
-        vaultName: "LBTCB_MAINNET",
+    BLBTC_MAINNET: {
+        vaultName: "BLBTC_MAINNET",
         subaccountId: BigInt(47975),
         destinationChainId: EthChainId.ETHEREUM,
         deriveChainId: EthChainId.DERIVE,
-        destinationChainAddress: "0xD5E977760EbD45D022500a0561741322dA5b04Da",
+        destinationChainAddress: "0xdFd366D941A51e1f53Fbddb19FB4eE3af17FF991",
         derive: "0x2104654d6Da663961a86AC3Cf1751981C5dc62E8",
         predepositUpgradeTimestampMs: undefined,
         vaultDecimals: 8,
         underlyingDecimals: 8,
         pointMultipliersPerDay: {
-            "lombard": 2000, // 2x * 1000 points per day
+            "lombard": 3000, // 3x * 1000 points per day
             "babylon": 100
         }
     },
-    LBTCB_BASE: {
-        vaultName: "LBTCB_BASE",
+    BLBTC_BASE: {
+        vaultName: "BLBTC_BASE",
         subaccountId: BigInt(47975),
         destinationChainId: EthChainId.BASE,
         deriveChainId: EthChainId.DERIVE,
-        destinationChainAddress: "0xe4f79D7e8Bf3639EFb0c63a38A5ffF7942377986",
+        destinationChainAddress: "0xA2bE759B86CeA53372C3e9a882047cdC3884D568",
         derive: "0x2104654d6Da663961a86AC3Cf1751981C5dc62E8",
         predepositUpgradeTimestampMs: undefined,
         vaultDecimals: 8,
         underlyingDecimals: 8,
         pointMultipliersPerDay: {
-            "lombard": 2000, // 2x * 1000 points per day
+            "lombard": 3000, // 3x * 1000 points per day
             "babylon": 100
         }
     },

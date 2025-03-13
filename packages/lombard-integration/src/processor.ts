@@ -27,11 +27,11 @@ const FILL_INTERVAL_MINUTES = 24 * 60 // daily
 // Mainnet Binds //
 ///////////////////
 
-ERC20Processor.bind({ address: DERIVE_VAULTS.LBTCB_MAINNET.destinationChainAddress, network: DERIVE_VAULTS.LBTCB_MAINNET.destinationChainId })
+ERC20Processor.bind({ address: DERIVE_VAULTS.BLBTC_MAINNET.destinationChainAddress, network: DERIVE_VAULTS.BLBTC_MAINNET.destinationChainId })
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS.LBTCB_MAINNET, V2_ASSETS.LBTC.assetAndSubId, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
-            emitVaultUserPoints(ctx, DERIVE_VAULTS.LBTCB_MAINNET, oldSnapshot, newSnapshot)
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS.BLBTC_MAINNET, V2_ASSETS.LBTC.assetAndSubId, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.BLBTC_MAINNET, oldSnapshot, newSnapshot)
         }
     })
     // this time interval handles all vaults on mainnet
@@ -45,7 +45,7 @@ ERC20Processor.bind({ address: DERIVE_VAULTS.LBTCB_MAINNET.destinationChainAddre
                     (async () => {
                         let oldSnapshot: schemas.DeriveVaultUserSnapshot | undefined;
                         let newSnapshot: schemas.DeriveVaultUserSnapshot | undefined;
-                        if (snapshot.vaultName == "LBTCB_MAINNET") {
+                        if (snapshot.vaultName == "BLBTC_MAINNET") {
                             [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS[snapshot.vaultName], V2_ASSETS.LBTC.assetAndSubId, snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)
                         } else {
                             [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS[snapshot.vaultName], snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)
@@ -88,11 +88,11 @@ ERC20Processor.bind(
 ////////////////
 
 
-ERC20Processor.bind({ address: DERIVE_VAULTS.LBTCB_BASE.destinationChainAddress, network: DERIVE_VAULTS.LBTCB_BASE.destinationChainId })
+ERC20Processor.bind({ address: DERIVE_VAULTS.BLBTC_BASE.destinationChainAddress, network: DERIVE_VAULTS.BLBTC_BASE.destinationChainId })
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS.LBTCB_BASE, V2_ASSETS.LBTC.assetAndSubId, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
-            emitVaultUserPoints(ctx, DERIVE_VAULTS.LBTCB_BASE, oldSnapshot, newSnapshot)
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS.BLBTC_BASE, V2_ASSETS.LBTC.assetAndSubId, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.BLBTC_BASE, oldSnapshot, newSnapshot)
         }
     })
     // this time interval handles all vaults on base
@@ -106,7 +106,7 @@ ERC20Processor.bind({ address: DERIVE_VAULTS.LBTCB_BASE.destinationChainAddress,
                     (async () => {
                         let oldSnapshot: schemas.DeriveVaultUserSnapshot | undefined;
                         let newSnapshot: schemas.DeriveVaultUserSnapshot | undefined;
-                        if (snapshot.vaultName == "LBTCB_BASE") {
+                        if (snapshot.vaultName == "BLBTC_BASE") {
                             [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS[snapshot.vaultName], V2_ASSETS.LBTC.assetAndSubId, snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)
                         } else {
                             [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS[snapshot.vaultName], snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)
@@ -138,7 +138,7 @@ for (const params of [
     ).onTimeInterval(async (_, ctx) => {
         await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCPS)
         await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCCS)
-        await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCB_MAINNET)
+        await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.BLBTC_MAINNET)
     },
         FILL_INTERVAL_MINUTES,
         FILL_INTERVAL_MINUTES
@@ -152,7 +152,7 @@ for (const params of [
     GlobalProcessor.bind(
         params
     ).onTimeInterval(async (_, ctx) => {
-        await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.LBTCB_BASE)
+        await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.BLBTC_BASE)
     },
         FILL_INTERVAL_MINUTES,
         FILL_INTERVAL_MINUTES
@@ -190,7 +190,7 @@ GlobalProcessor.bind(
 GlobalProcessor.bind(
     { network: EthChainId.ETHEREUM, startBlock: MAINNET_BASIS_VAULT_EXCHANGE_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
-    await vaults.saveVaultExchangeBalance(ctx, DERIVE_VAULTS.LBTCB_MAINNET, V2_ASSETS.LBTC)
+    await vaults.saveVaultExchangeBalance(ctx, DERIVE_VAULTS.BLBTC_MAINNET, V2_ASSETS.LBTC)
 },
     60 * 1, // more precise as leverage can change rapidly
     60 * 1
@@ -199,7 +199,7 @@ GlobalProcessor.bind(
 GlobalProcessor.bind(
     { network: EthChainId.BASE, startBlock: BASE_BASIS_VAULT_EXCHANGE_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
-    await vaults.saveVaultExchangeBalance(ctx, DERIVE_VAULTS.LBTCB_BASE, V2_ASSETS.LBTC)
+    await vaults.saveVaultExchangeBalance(ctx, DERIVE_VAULTS.BLBTC_BASE, V2_ASSETS.LBTC)
 },
     60 * 1, // more precise as leverage can change rapidly
     60 * 1

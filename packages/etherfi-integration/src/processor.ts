@@ -47,7 +47,7 @@ ERC20Processor.bind(
                     (async () => {
                         let oldSnapshot: schemas.DeriveVaultUserSnapshot | undefined;
                         let newSnapshot: schemas.DeriveVaultUserSnapshot | undefined;
-                        if (snapshot.vaultName == "WEETHB_MAINNET") {
+                        if (snapshot.vaultName == "BWEETH_MAINNET") {
                             [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], V2_ASSETS.WEETH.assetAndSubId, snapshot.vaultAddress, snapshot.owner, [VAULT_POOLS.SWELL_L2.address], pools.swellL2.getSwellL2Balance)
                         } else {
                             [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], snapshot.vaultAddress, snapshot.owner, [VAULT_POOLS.SWELL_L2.address], pools.swellL2.getSwellL2Balance)
@@ -86,12 +86,12 @@ ERC20Processor.bind(
     })
 
 ERC20Processor.bind(
-    { address: DERIVE_VAULTS.WEETHB_MAINNET.destinationChainAddress, network: EthChainId.ETHEREUM }
+    { address: DERIVE_VAULTS.BWEETH_MAINNET.destinationChainAddress, network: EthChainId.ETHEREUM }
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS.WEETHB_MAINNET, V2_ASSETS.WEETH.assetAndSubId, ctx.address, user, [VAULT_POOLS.SWELL_L2.address], pools.swellL2.getSwellL2Balance)
-            emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHB_MAINNET, oldSnapshot, newSnapshot)
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS.BWEETH_MAINNET, V2_ASSETS.WEETH.assetAndSubId, ctx.address, user, [VAULT_POOLS.SWELL_L2.address], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.BWEETH_MAINNET, oldSnapshot, newSnapshot)
         }
     })
 
@@ -120,7 +120,7 @@ ERC20Processor.bind(
                     (async () => {
                         let oldSnapshot: schemas.DeriveVaultUserSnapshot | undefined;
                         let newSnapshot: schemas.DeriveVaultUserSnapshot | undefined;
-                        if (snapshot.vaultName == "WEETHB_ARB") {
+                        if (snapshot.vaultName == "BWEETH_ARB") {
                             [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], V2_ASSETS.WEETH.assetAndSubId, snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)   
                         } else {
                             [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)
@@ -159,12 +159,12 @@ ERC20Processor.bind(
     })
 
 ERC20Processor.bind(
-    { address: DERIVE_VAULTS.WEETHB_ARB.destinationChainAddress, network: EthChainId.ARBITRUM }
+    { address: DERIVE_VAULTS.BWEETH_ARB.destinationChainAddress, network: EthChainId.ARBITRUM }
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS.WEETHB_ARB, V2_ASSETS.WEETH.assetAndSubId, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
-            emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHB_ARB, oldSnapshot, newSnapshot)
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS.BWEETH_ARB, V2_ASSETS.WEETH.assetAndSubId, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.BWEETH_ARB, oldSnapshot, newSnapshot)
         }
     })
 
@@ -173,12 +173,12 @@ ERC20Processor.bind(
 ////////////////
 
 ERC20Processor.bind(
-    { address: DERIVE_VAULTS.WEETHB_BASE.destinationChainAddress, network: EthChainId.BASE }
+    { address: DERIVE_VAULTS.BWEETH_BASE.destinationChainAddress, network: EthChainId.BASE }
 )
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS.WEETHB_BASE, V2_ASSETS.WEETH.assetAndSubId, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
-            emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHB_BASE, oldSnapshot, newSnapshot)
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS.BWEETH_BASE, V2_ASSETS.WEETH.assetAndSubId, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.BWEETH_BASE, oldSnapshot, newSnapshot)
         }
     })
     // this time interval handles all vaults on base
@@ -192,7 +192,7 @@ ERC20Processor.bind(
                     (async () => {
                         let oldSnapshot: schemas.DeriveVaultUserSnapshot | undefined;
                         let newSnapshot: schemas.DeriveVaultUserSnapshot | undefined;
-                        if (snapshot.vaultName == "WEETHB_BASE") { 
+                        if (snapshot.vaultName == "BWEETH_BASE") { 
                             [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], V2_ASSETS.WEETH.assetAndSubId, snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)
                         } else {
                             [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS[snapshot.vaultName as VaultName], snapshot.vaultAddress, snapshot.owner, [], pools.swellL2.getSwellL2Balance)
@@ -221,7 +221,7 @@ GlobalProcessor.bind(
     await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHC_MAINNET)
     await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHCS_MAINNET)
     await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHBULL_MAINNET)
-    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHB_MAINNET)
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.BWEETH_MAINNET)
 },
     FILL_INTERVAL_MINUTES,
     FILL_INTERVAL_MINUTES
@@ -233,7 +233,7 @@ GlobalProcessor.bind(
     await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHC_ARB)
     await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHCS_ARB)
     await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHBULL_ARB)
-    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHB_ARB)
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.BWEETH_ARB)
 },
     FILL_INTERVAL_MINUTES,
     FILL_INTERVAL_MINUTES
@@ -242,7 +242,7 @@ GlobalProcessor.bind(
 GlobalProcessor.bind(
     { network: EthChainId.BASE, startBlock: BASE_VAULT_PRICE_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
-    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHB_BASE)
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.BWEETH_BASE)
 },
     FILL_INTERVAL_MINUTES,
     FILL_INTERVAL_MINUTES
@@ -287,7 +287,7 @@ GlobalProcessor.bind(
 GlobalProcessor.bind(
     { network: EthChainId.ETHEREUM, startBlock: MAINNET_BASIS_VAULT_EXCHANGE_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
-    await vaults.saveVaultExchangeBalance(ctx, DERIVE_VAULTS.WEETHB_MAINNET, V2_ASSETS.WEETH)
+    await vaults.saveVaultExchangeBalance(ctx, DERIVE_VAULTS.BWEETH_MAINNET, V2_ASSETS.WEETH)
 },
     60 * 1, // more precise as leverage can change rapidly
     60 * 1
@@ -296,7 +296,7 @@ GlobalProcessor.bind(
 GlobalProcessor.bind(
     { network: EthChainId.ARBITRUM, startBlock: ARB_BASIS_VAULT_EXCHANGE_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
-    await vaults.saveVaultExchangeBalance(ctx, DERIVE_VAULTS.WEETHB_ARB, V2_ASSETS.WEETH)
+    await vaults.saveVaultExchangeBalance(ctx, DERIVE_VAULTS.BWEETH_ARB, V2_ASSETS.WEETH)
 },
     60 * 1, // more precise as leverage can change rapidly
     60 * 1
@@ -305,7 +305,7 @@ GlobalProcessor.bind(
 GlobalProcessor.bind(
     { network: EthChainId.BASE, startBlock: BASE_BASIS_VAULT_EXCHANGE_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
-    await vaults.saveVaultExchangeBalance(ctx, DERIVE_VAULTS.WEETHB_BASE, V2_ASSETS.WEETH)
+    await vaults.saveVaultExchangeBalance(ctx, DERIVE_VAULTS.BWEETH_BASE, V2_ASSETS.WEETH)
 },
     60 * 1, // more precise as leverage can change rapidly
     60 * 1
