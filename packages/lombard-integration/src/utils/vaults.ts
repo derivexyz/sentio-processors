@@ -14,6 +14,8 @@ export function emitVaultUserPoints(ctx: EthContext, vaultConfig: VaultConfig, l
     ctx.eventLogger.emit("point_update", {
         account: lastSnapshot.owner,
         vaultAddress: lastSnapshot.vaultAddress,
+        assetName: vaultConfig.vaultName,
+        
         earnedLombardPoints: earnedLombardPoints,
         earnedBabylonPoints: earnedBabylonPoints,
         // last snapshot
