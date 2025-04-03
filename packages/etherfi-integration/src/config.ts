@@ -17,10 +17,13 @@ export const INTEGRATOR_SEASONS: IntegratorSeason[] = [
 export enum VaultName {
     WEETHC_MAINNET = "WEETHC_MAINNET",
     WEETHC_ARB = "WEETHC_ARB",
+    WEETHC_BASE = "WEETHC_BASE",
     WEETHCS_MAINNET = "WEETHCS_MAINNET",
     WEETHCS_ARB = "WEETHCS_ARB",
+    WEETHCS_BASE = "WEETHCS_BASE",
     WEETHBULL_MAINNET = "WEETHBULL_MAINNET",
     WEETHBULL_ARB = "WEETHBULL_ARB",
+    WEETHBULL_BASE = "WEETHBULL_BASE",
     BWEETH_MAINNET = "BWEETH_MAINNET",
     BWEETH_ARB = "BWEETH_ARB",
     BWEETH_BASE = "BWEETH_BASE",
@@ -65,6 +68,21 @@ export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
             "eigenlayer": 21,
         },
     },
+    WEETHC_BASE: {
+        vaultName: "WEETHC_BASE",
+        subaccountId: BigInt(5738),
+        destinationChainId: EthChainId.BASE,
+        deriveChainId: EthChainId.DERIVE,
+        destinationChainAddress: "0xdE45E2bCCb99E0ed1a2876cFC51a71ca5e822641",
+        derive: "0xec68928bd83B2E52fF5A8e8c215B6ea72879F521",
+        predepositUpgradeTimestampMs: 1720252800000,
+        vaultDecimals: 18,
+        underlyingDecimals: 18,
+        pointMultipliersPerDay: {
+            "etherfi": 20000,
+            "eigenlayer": 21,
+        },
+    },
     WEETHCS_MAINNET: {
         vaultName: "WEETHCS_MAINNET",
         subaccountId: BigInt(10301),
@@ -95,6 +113,21 @@ export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
             "eigenlayer": 21,
         }
     },
+    WEETHCS_BASE: {
+        vaultName: VaultName.WEETHCS_BASE,
+        subaccountId: BigInt(10301),
+        destinationChainId: EthChainId.BASE,
+        deriveChainId: EthChainId.DERIVE,
+        destinationChainAddress: "0x85afa764A366d70d241513e3cBDAdd97A9A74e21",
+        derive: "0x12ab0242b3e8d4502FebCED6C2d52fD23F7262af",
+        predepositUpgradeTimestampMs: undefined,
+        vaultDecimals: 18,
+        underlyingDecimals: 18,
+        pointMultipliersPerDay: {
+            "etherfi": 20000,
+            "eigenlayer": 21,
+        }
+    },
     WEETHBULL_MAINNET: {
         vaultName: VaultName.WEETHBULL_MAINNET,
         subaccountId: BigInt(10303),
@@ -114,6 +147,21 @@ export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
         vaultName: VaultName.WEETHBULL_ARB,
         subaccountId: BigInt(10303),
         destinationChainId: EthChainId.ARBITRUM,
+        deriveChainId: EthChainId.DERIVE,
+        destinationChainAddress: "0xC7EE36E027272F11135792FaDE64D9365Cc583B5",
+        derive: "0xe48cdbe3A233Ea577c9ee6959801e7730e516d1A",
+        predepositUpgradeTimestampMs: undefined,
+        vaultDecimals: 18,
+        underlyingDecimals: 18,
+        pointMultipliersPerDay: {
+            "etherfi": 20000,
+            "eigenlayer": 21,
+        }
+    },
+    WEETHBULL_BASE: {
+        vaultName: VaultName.WEETHBULL_BASE,
+        subaccountId: BigInt(10303),
+        destinationChainId: EthChainId.BASE,
         deriveChainId: EthChainId.DERIVE,
         destinationChainAddress: "0xC7EE36E027272F11135792FaDE64D9365Cc583B5",
         derive: "0xe48cdbe3A233Ea577c9ee6959801e7730e516d1A",

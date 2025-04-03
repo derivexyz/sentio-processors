@@ -27,12 +27,12 @@ export const INTEGRATOR_SEASONS: IntegratorSeason[] = [
 export enum VaultName {
     SUSDEBULL_MAINNET = "SUSDEBULL_MAINNET",
     SUSDEBULL_ARB = "SUSDEBULL_ARB",
-
+    SUSDEBULL_BASE = "SUSDEBULL_BASE",
 }
 
 export const ARB_VAULT_PRICE_START_BLOCK = 230322777; // June 2024
 export const MAINNET_VAULT_PRICE_START_BLOCK = 20237741; // July 2024
-
+export const BASE_VAULT_PRICE_START_BLOCK = 284595000; // April, 2025
 export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
     SUSDEBULL_MAINNET: {
         vaultName: VaultName.SUSDEBULL_MAINNET,
@@ -61,7 +61,22 @@ export const DERIVE_VAULTS: Record<VaultName, vaults.VaultConfig> = {
         pointMultipliersPerDay: {
             "ethena": 5,
         }
+    },
+    SUSDEBULL_BASE: {
+        vaultName: VaultName.SUSDEBULL_BASE,
+        subaccountId: BigInt(10114),
+        destinationChainId: EthChainId.BASE,
+        deriveChainId: EthChainId.DERIVE,
+        destinationChainAddress: "0x98f1AED814443d6DDD0a724B0f40098F517159Bc",
+        derive: "0x0b4eD379da8eF4FCF06F697c5782CA7b4c3E505E",
+        predepositUpgradeTimestampMs: 1743708000000, // April 2nd, 2024
+        vaultDecimals: 18,
+        underlyingDecimals: 18,
+        pointMultipliersPerDay: {
+            "ethena": 5,
+        }
     }
+
 }
 
 export enum V2AssetName {
@@ -76,6 +91,8 @@ export const VAULT_POOLS: Record<string, vaults.VaultPoolConfig> = {
 export const V2_ASSETS: Record<V2AssetName, vaults.V2AssetConfig> = {
     SUSDE: {
         assetAndSubId: "0x375804cdcf0d534fdd2657584a7c4ff5ab14a2bb000000000000000000000000", // asset: 0x375804CdcF0D534FDD2657584A7c4Ff5AB14A2bb
+        assetAddress: "0x375804CdcF0D534FDD2657584A7c4Ff5AB14A2bb",
+        subId: BigInt(0),
         assetName: "SUSDE",
         pointMultipliersPerDay: {
             ethena: 5,
@@ -84,6 +101,8 @@ export const V2_ASSETS: Record<V2AssetName, vaults.V2AssetConfig> = {
     USDE: {
         assetAndSubId: "0x028b9ffa86fc4c366e11aa8b3e71dc0502713abf000000000000000000000000", // asset: 0x028B9fFA86fc4c366e11AA8b3E71dc0502713ABF
         assetName: "USDE",
+        assetAddress: "0x028B9fFA86fc4c366e11AA8b3E71dc0502713ABF",
+        subId: BigInt(0),
         pointMultipliersPerDay: {
             ethena: 20,
         }

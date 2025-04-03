@@ -210,6 +210,36 @@ ERC20Processor.bind(
         FILL_INTERVAL_MINUTES // backfill at 1 day
     )
 
+ERC20Processor.bind(
+        { address: DERIVE_VAULTS.WEETHC_BASE.destinationChainAddress, network: EthChainId.BASE }
+    )
+        .onEventTransfer(async (event, ctx) => {
+            for (const user of [event.args.from, event.args.to]) {
+                let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.WEETHC_BASE, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+                emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHC_BASE, oldSnapshot, newSnapshot)
+            }
+        })
+
+ERC20Processor.bind(
+    { address: DERIVE_VAULTS.WEETHCS_BASE.destinationChainAddress, network: EthChainId.BASE }
+)
+    .onEventTransfer(async (event, ctx) => {
+        for (const user of [event.args.from, event.args.to]) {
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.WEETHCS_BASE, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHCS_BASE, oldSnapshot, newSnapshot)
+        }
+    })
+
+ERC20Processor.bind(
+    { address: DERIVE_VAULTS.WEETHBULL_BASE.destinationChainAddress, network: EthChainId.BASE }
+)
+    .onEventTransfer(async (event, ctx) => {
+        for (const user of [event.args.from, event.args.to]) {
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.WEETHBULL_BASE, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.WEETHBULL_BASE, oldSnapshot, newSnapshot)
+        }
+    })
+
 
 /////////////////////////////
 // Vault Token Price Binds //
@@ -242,6 +272,9 @@ GlobalProcessor.bind(
 GlobalProcessor.bind(
     { network: EthChainId.BASE, startBlock: BASE_VAULT_PRICE_START_BLOCK }
 ).onTimeInterval(async (_, ctx) => {
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHC_BASE)
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHCS_BASE)
+    await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.WEETHBULL_BASE)
     await saveCurrentVaultTokenPrice(ctx, DERIVE_VAULTS.BWEETH_BASE)
 },
     FILL_INTERVAL_MINUTES,
