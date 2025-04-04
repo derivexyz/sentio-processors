@@ -16,7 +16,7 @@ export const INTEGRATOR_SEASONS: IntegratorSeason[] = [
     },
     {
         name: "season_3",
-        seasonEndMs: 1742688000000 // TODO: need to change - currently wrong, see https://app.swellnetwork.io/dao/swell-city
+        seasonEndMs: 1850000000000 // leaving forever on (2028)
     }
 ]
 
@@ -62,6 +62,8 @@ export const V2_ASSETS: Record<V2AssetName, vaults.V2AssetConfig> = {
     RSWETH: {
         assetAndSubId: "0xef2fc00b7f7c71c73a68dad25c9d673b2e1983ba000000000000000000000000", // asset: 0xef2Fc00B7F7c71c73a68dAD25c9D673b2e1983ba
         assetName: "RSWETH",
+        assetAddress: "0xef2Fc00B7F7c71c73a68dAD25c9D673b2e1983ba",
+        subId: BigInt(0),
         pointMultipliersPerDay: {
             swell: 18,
             eigenlayer: 21

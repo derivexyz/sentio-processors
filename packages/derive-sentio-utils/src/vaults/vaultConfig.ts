@@ -22,6 +22,8 @@ export type VaultPoolConfig = {
 
 export type V2AssetConfig = {
     assetAndSubId: string;
+    assetAddress: string;
+    subId: bigint;
     assetName: string;
     pointMultipliersPerDay: Record<string, number>;
 }
