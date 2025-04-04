@@ -27,11 +27,11 @@ const FILL_INTERVAL_MINUTES = 24 * 60 // daily
 // Mainnet Binds //
 ///////////////////
 
-ERC20Processor.bind({ address: DERIVE_VAULTS.BLBTC_MAINNET.destinationChainAddress, network: DERIVE_VAULTS.BLBTC_MAINNET.destinationChainId })
+ERC20Processor.bind({ address: DERIVE_VAULTS.LBTCCS.destinationChainAddress, network: DERIVE_VAULTS.LBTCCS.destinationChainId })
     .onEventTransfer(async (event, ctx) => {
         for (const user of [event.args.from, event.args.to]) {
-            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS.BLBTC_MAINNET, V2_ASSETS.LBTC.assetAndSubId, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
-            emitVaultUserPoints(ctx, DERIVE_VAULTS.BLBTC_MAINNET, oldSnapshot, newSnapshot)
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.LBTCCS, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.LBTCCS, oldSnapshot, newSnapshot)
         }
     })
     // this time interval handles all vaults on mainnet
@@ -63,16 +63,6 @@ ERC20Processor.bind({ address: DERIVE_VAULTS.BLBTC_MAINNET.destinationChainAddre
         FILL_INTERVAL_MINUTES // backfill at 15 minutes
     )
 
-
-
-ERC20Processor.bind({ address: DERIVE_VAULTS.LBTCCS.destinationChainAddress, network: DERIVE_VAULTS.LBTCCS.destinationChainId })
-    .onEventTransfer(async (event, ctx) => {
-        for (const user of [event.args.from, event.args.to]) {
-            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshot(ctx, DERIVE_VAULTS.LBTCCS, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
-            emitVaultUserPoints(ctx, DERIVE_VAULTS.LBTCCS, oldSnapshot, newSnapshot)
-        }
-    })
-
 ERC20Processor.bind(
     { address: DERIVE_VAULTS.LBTCPS.destinationChainAddress, network: DERIVE_VAULTS.LBTCPS.destinationChainId }
 )
@@ -82,6 +72,15 @@ ERC20Processor.bind(
             emitVaultUserPoints(ctx, DERIVE_VAULTS.LBTCPS, oldSnapshot, newSnapshot)
         }
     })
+
+ERC20Processor.bind({ address: DERIVE_VAULTS.BLBTC_MAINNET.destinationChainAddress, network: DERIVE_VAULTS.BLBTC_MAINNET.destinationChainId })
+    .onEventTransfer(async (event, ctx) => {
+        for (const user of [event.args.from, event.args.to]) {
+            let [oldSnapshot, newSnapshot] = await vaults.updateVaultUserSnapshotWithSpotHoldings(ctx, DERIVE_VAULTS.BLBTC_MAINNET, V2_ASSETS.LBTC.assetAndSubId, ctx.address, user, [], pools.swellL2.getSwellL2Balance)
+            emitVaultUserPoints(ctx, DERIVE_VAULTS.BLBTC_MAINNET, oldSnapshot, newSnapshot)
+        }
+    })
+    
 
 ////////////////
 // Base Binds //
